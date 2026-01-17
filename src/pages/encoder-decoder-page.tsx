@@ -1,6 +1,6 @@
-import { Text, Title } from '@mantine/core';
+import {Text, Title} from '@mantine/core';
 
-export function DecoderEncoderPage() {
+export function EncoderDecoderPage() {
   return (
     <div>
       <Title order={2} mb="md">Decoder/Encoder</Title>

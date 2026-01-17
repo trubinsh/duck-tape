@@ -1,10 +1,24 @@
-import { AppShell, Group, Text, ScrollArea, NavLink, ActionIcon, useMantineColorScheme, useComputedColorScheme } from '@mantine/core';
-import { IconSun, IconMoon } from '@tabler/icons-react';
-import { Link, useLocation } from 'react-router-dom';
+import {
+  ActionIcon,
+  AppShell,
+  Autocomplete,
+  Group, Kbd,
+  NavLink,
+  ScrollArea,
+  Text,
+  useComputedColorScheme,
+  useMantineColorScheme
+} from '@mantine/core';
+import {IconMoon, IconSun} from '@tabler/icons-react';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {tools} from "@/lib/utils.ts";
+import {useRef, useState} from "react";
+import {useDisclosure, useHotkeys} from "@mantine/hooks";
+import * as React from "react";
 
 function ThemeControl() {
-  const { setColorScheme } = useMantineColorScheme();
-  const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
+  const {setColorScheme} = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme('light', {getInitialValueInEffect: true});
 
   return (
     <ActionIcon
@@ -14,22 +28,42 @@ function ThemeControl() {
       aria-label="Toggle color scheme"
     >
       {computedColorScheme === 'light' ? (
-        <IconMoon stroke={1.5} />
+        <IconMoon stroke={1.5}/>
       ) : (
-        <IconSun stroke={1.5} />
+        <IconSun stroke={1.5}/>
       )}
     </ActionIcon>
   );
 }
 
-export function ApplicationLayout({ children }: { children: React.ReactNode }) {
+export function ApplicationLayout({children}: { children: React.ReactNode }) {
   const location = useLocation();
+  const navigate = useNavigate()
+  const [chosenTool, setChosenTool] = useState<string>("")
+  const searchHotkey = (<><Kbd size={"xs"}>ctrl</Kbd><div>+</div><Kbd size={"xs"}>K</Kbd></>)
+  const searchFieldRef = useRef<HTMLInputElement>(null)
+  const [searchFieldDropdownOpened, { open, close }] = useDisclosure();
+
+  useHotkeys([["ctrl+K", () => {
+    if(searchFieldRef != null && searchFieldRef.current != null) {
+      setChosenTool("")
+      open()
+      searchFieldRef.current.focus()
+    }
+  }]], [])
+
+  const onChosenToolSubmit = (value: string) => {
+    const tool = tools.find(t => t.name === value)
+    if (!tool) return
+    navigate(tool.redirectUrl)
+    close()
+  }
 
   return (
     <AppShell
-      header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: 'sm' }}
-      aside={{ width: 300, breakpoint: 'md' }}
+      header={{height: 60}}
+      navbar={{width: 300, breakpoint: 'sm'}}
+      aside={{width: 300, breakpoint: 'md'}}
       padding="md"
       styles={{
         main: {
@@ -48,24 +82,40 @@ export function ApplicationLayout({ children }: { children: React.ReactNode }) {
     >
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
-          <Text fw={700} component={Link} to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Text fw={700} component={Link} to="/"
+                style={{textDecoration: 'none', color: 'inherit'}}>
             DevTools
           </Text>
-          <ThemeControl />
+          <ThemeControl/>
         </Group>
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
         <AppShell.Section>
-          <Text fw={500} mb="xs">Tools</Text>
+          <Autocomplete mb="xs" selectFirstOptionOnChange ref={searchFieldRef}
+                        data={tools.map((tool) => tool.name)}
+                        onClick={open}
+                        placeholder={"Search"}
+                        rightSection={searchHotkey}
+                        rightSectionWidth={80}
+                        rightSectionPointerEvents="none"
+                        value={chosenTool}
+                        dropdownOpened={searchFieldDropdownOpened}
+                        onOptionSubmit={onChosenToolSubmit}
+                        onChange={setChosenTool}/>
         </AppShell.Section>
         <AppShell.Section grow component={ScrollArea}>
-          <NavLink
-            component={Link}
-            to="/decoder-encoder"
-            label="Decoder/Encoder"
-            active={location.pathname === '/decoder-encoder'}
-          />
+          {
+            tools.map((tool) => (
+              <NavLink
+                key={tool.redirectUrl}
+                component={Link}
+                to={tool.redirectUrl}
+                label={tool.name}
+                active={location.pathname === tool.redirectUrl}
+              />
+            ))
+          }
         </AppShell.Section>
         <AppShell.Section>
           <Text fw={500}>Navbar Footer</Text>

@@ -28,7 +28,9 @@ client-side, without any backend services.
 ## Directory Structure
 - `src/assets/`: Static assets like images and SVGs.
 - `src/pages/`: Page-level components.
+- `src/components/layout/`: Base layouts for pages.
 - `src/lib/`: Utility functions and shared logic.
+- `src/test/`: Unit test folder. Structure mirrors src structure. i.e. `src/components/layout/application-layout.tsx` test is located at `src/test/components/layout/application-layout.test.tsx`.
 
 ## UI Principles
 - **Retractability**: Sidebar is not collapsible.
@@ -38,7 +40,7 @@ client-side, without any backend services.
 - **Error Handling**: 
   - Use `ErrorBoundary` for global error handling.
   - Use `useError` hook for local error handling.
-  - Use `Dialog` component for error messages.
+  - Use `notifications` component for error messages.
 
 ## TypeScript
 - Use TypeScript for better type safety
