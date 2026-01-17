@@ -1,0 +1,16 @@
+stages:
+  - test
+
+unit-test:
+  tags:
+    - self-hosted
+  image: node:24-alpine
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
+      when: always
+    - when: never
+  before_script:
+    - npm install
+  script:
+    - npx vitest run
