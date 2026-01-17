@@ -4,6 +4,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {ApplicationLayout} from "@/components/layout/application-layout";
 import {EncoderDecoderPage} from "@/pages/encoder-decoder-page.tsx";
 import {Generator} from "@/pages/generator.tsx";
+import {loadSettings} from "@/lib/settings.ts";
 
 const theme = createTheme({
   fontFamily: 'JetBrains Mono',
@@ -25,10 +26,12 @@ const theme = createTheme({
 });
 
 export default function App() {
+  const settings = loadSettings();
+
   return (
     <>
-      <ColorSchemeScript defaultColorScheme="dark"/>
-      <MantineProvider theme={theme} defaultColorScheme="dark">
+      <ColorSchemeScript defaultColorScheme={settings.theme}/>
+      <MantineProvider theme={theme} defaultColorScheme={settings.theme}>
         <BrowserRouter>
           <ApplicationLayout>
             <Routes>

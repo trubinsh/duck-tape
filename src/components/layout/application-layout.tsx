@@ -12,17 +12,24 @@ import {
 import {IconMoon, IconSun} from '@tabler/icons-react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {tools} from "@/lib/utils.ts";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useDisclosure, useHotkeys} from "@mantine/hooks";
 import * as React from "react";
+import {loadSettings, saveSettings} from "@/lib/settings.ts";
 
 function ThemeControl() {
   const {setColorScheme} = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', {getInitialValueInEffect: true});
 
+  const toggleColorScheme = () => {
+    const newScheme = computedColorScheme === 'light' ? 'dark' : 'light';
+    setColorScheme(newScheme);
+    saveSettings({ theme: newScheme });
+  };
+
   return (
     <ActionIcon
-      onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
+      onClick={toggleColorScheme}
       variant="default"
       size="lg"
       aria-label="Toggle color scheme"
@@ -43,6 +50,22 @@ export function ApplicationLayout({children}: { children: React.ReactNode }) {
   const searchHotkey = (<><Kbd size={"xs"}>ctrl</Kbd><div>+</div><Kbd size={"xs"}>K</Kbd></>)
   const searchFieldRef = useRef<HTMLInputElement>(null)
   const [searchFieldDropdownOpened, { open, close }] = useDisclosure();
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    const settings = loadSettings();
+    if (settings.lastPage && settings.lastPage !== location.pathname && location.pathname === '/') {
+      navigate(settings.lastPage, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsInitialized(true);
+  }, [location.pathname, navigate]);
+
+  useEffect(() => {
+    if (isInitialized) {
+      saveSettings({ lastPage: location.pathname });
+    }
+  }, [location.pathname, isInitialized]);
 
   useHotkeys([["ctrl+K", () => {
     if(searchFieldRef != null && searchFieldRef.current != null) {
