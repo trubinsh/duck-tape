@@ -26,7 +26,7 @@ describe('ApplicationLayout Settings Persistence', () => {
           <ApplicationLayout>
             <Routes>
               <Route path="/" element={<div>Home</div>} />
-              <Route path="/generator" element={<div>Generator Page</div>} />
+              <Route path="/formatter" element={<div>Generator Page</div>} />
             </Routes>
           </ApplicationLayout>
         </MemoryRouter>
@@ -37,14 +37,14 @@ describe('ApplicationLayout Settings Persistence', () => {
     expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({ lastPage: '/' });
 
     // Click on Generator link in the navbar
-    const generatorNavLink = screen.getAllByText('Generator').find(el => el.closest('a'));
+    const generatorNavLink = screen.getAllByText('JSON Formatter').find(el => el.closest('a'));
     if (!generatorNavLink) throw new Error('Generator link not found');
     await userEvent.click(generatorNavLink);
 
     expect(screen.getByText('Generator Page')).toBeInTheDocument();
     
     await waitFor(() => {
-        expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({ lastPage: '/generator' });
+        expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({ lastPage: '/formatter' });
     });
   });
 

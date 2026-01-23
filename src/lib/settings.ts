@@ -3,11 +3,13 @@ export const SETTINGS_KEY = 'dev-tools-settings';
 export interface UserSettings {
   lastPage: string;
   theme: 'light' | 'dark' | 'auto';
+  smartSearchEnabled: boolean;
 }
 
 const DEFAULT_SETTINGS: UserSettings = {
   lastPage: '/',
   theme: 'dark',
+  smartSearchEnabled: false
 };
 
 export function loadSettings(): UserSettings {

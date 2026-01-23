@@ -1,21 +1,22 @@
 import {
   ActionIcon,
   AppShell,
-  Autocomplete,
-  Group, Kbd,
+  Group,
   NavLink,
   ScrollArea,
+  Switch,
   Text,
   useComputedColorScheme,
   useMantineColorScheme
 } from '@mantine/core';
 import {IconMoon, IconSun} from '@tabler/icons-react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import {tools} from "@/lib/utils.ts";
-import {useEffect, useRef, useState} from "react";
-import {useDisclosure, useHotkeys} from "@mantine/hooks";
+import {tools, useBrowser} from "@/lib/utils.ts";
 import * as React from "react";
+import {type BaseSyntheticEvent, useEffect, useState} from "react";
 import {loadSettings, saveSettings} from "@/lib/settings.ts";
+import {useClipboardAwareContext} from "@/lib/clipboard-aware-context.ts";
+import {SearchAutocomplete} from "@/components/search-autocomplete.tsx";
 
 function ThemeControl() {
   const {setColorScheme} = useMantineColorScheme();
@@ -24,7 +25,7 @@ function ThemeControl() {
   const toggleColorScheme = () => {
     const newScheme = computedColorScheme === 'light' ? 'dark' : 'light';
     setColorScheme(newScheme);
-    saveSettings({ theme: newScheme });
+    saveSettings({theme: newScheme});
   };
 
   return (
@@ -43,19 +44,25 @@ function ThemeControl() {
   );
 }
 
-export function ApplicationLayout({children}: { children: React.ReactNode }) {
+export function ApplicationLayout({children, title = "DevTools"}: {
+  children: React.ReactNode,
+  title?: string
+}) {
+  const settings = loadSettings();
   const location = useLocation();
-  const navigate = useNavigate()
-  const [chosenTool, setChosenTool] = useState<string>("")
-  const searchHotkey = (<><Kbd size={"xs"}>ctrl</Kbd><div>+</div><Kbd size={"xs"}>K</Kbd></>)
-  const searchFieldRef = useRef<HTMLInputElement>(null)
-  const [searchFieldDropdownOpened, { open, close }] = useDisclosure();
+  const navigate = useNavigate();
   const [isInitialized, setIsInitialized] = useState(false);
+  const browser = useBrowser();
+  const {enableClipboardAware, setEnableClipboardAware} = useClipboardAwareContext()
+
+  useEffect(() => {
+    setEnableClipboardAware(settings.smartSearchEnabled)
+  }, [setEnableClipboardAware, settings.smartSearchEnabled]);
 
   useEffect(() => {
     const settings = loadSettings();
     if (settings.lastPage && settings.lastPage !== location.pathname && location.pathname === '/') {
-      navigate(settings.lastPage, { replace: true });
+      navigate(settings.lastPage, {replace: true});
     }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsInitialized(true);
@@ -63,23 +70,13 @@ export function ApplicationLayout({children}: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isInitialized) {
-      saveSettings({ lastPage: location.pathname });
+      saveSettings({lastPage: location.pathname});
     }
   }, [location.pathname, isInitialized]);
 
-  useHotkeys([["ctrl+K", () => {
-    if(searchFieldRef != null && searchFieldRef.current != null) {
-      setChosenTool("")
-      open()
-      searchFieldRef.current.focus()
-    }
-  }]], [])
-
-  const onChosenToolSubmit = (value: string) => {
-    const tool = tools.find(t => t.name === value)
-    if (!tool) return
-    navigate(tool.redirectUrl)
-    close()
+  const handleSmartSearchToggle = (e: BaseSyntheticEvent) => {
+    setEnableClipboardAware(e.currentTarget.checked)
+    saveSettings({smartSearchEnabled: e.currentTarget.checked})
   }
 
   return (
@@ -107,36 +104,39 @@ export function ApplicationLayout({children}: { children: React.ReactNode }) {
         <Group h="100%" px="md" justify="space-between">
           <Text fw={700} component={Link} to="/"
                 style={{textDecoration: 'none', color: 'inherit'}}>
-            DevTools
+            {title}
           </Text>
-          <ThemeControl/>
+          <Group gap={"md"}>
+            {
+              // SmartSearch not supported on Safari yet. Safari has a lockdown on read from clipboard only for user-specific actions, Clipboard API does not allow direct reads
+              browser !== "Safari" && <Switch checked={enableClipboardAware}
+                                              onChange={handleSmartSearchToggle}
+                                              label={"Smart Search"}></Switch>
+            }
+            <ThemeControl/>
+          </Group>
         </Group>
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
         <AppShell.Section>
-          <Autocomplete mb="xs" selectFirstOptionOnChange ref={searchFieldRef}
-                        data={tools.map((tool) => tool.name)}
-                        onClick={open}
-                        placeholder={"Search"}
-                        rightSection={searchHotkey}
-                        rightSectionWidth={80}
-                        rightSectionPointerEvents="none"
-                        value={chosenTool}
-                        dropdownOpened={searchFieldDropdownOpened}
-                        onOptionSubmit={onChosenToolSubmit}
-                        onChange={setChosenTool}/>
+          <SearchAutocomplete/>
         </AppShell.Section>
         <AppShell.Section grow component={ScrollArea}>
           {
             tools.map((tool) => (
               <NavLink
                 key={tool.redirectUrl}
-                component={Link}
-                to={tool.redirectUrl}
-                label={tool.name}
-                active={location.pathname === tool.redirectUrl}
-              />
+                label={tool.group}
+                childrenOffset={28}
+                defaultOpened
+              >
+                {
+                  tool.formats.map(f => (
+                    <NavLink label={`${f} ${tool.group}`} key={`${f}-${tool.redirectUrl}`} component={Link} to={`${tool.redirectUrl}?format=${f}`}/>
+                  ))
+                }
+              </NavLink>
             ))
           }
         </AppShell.Section>
