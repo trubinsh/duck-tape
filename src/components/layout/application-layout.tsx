@@ -17,6 +17,7 @@ import {type BaseSyntheticEvent, useEffect, useState} from "react";
 import {loadSettings, saveSettings} from "@/lib/settings.ts";
 import {useClipboardAwareContext} from "@/lib/clipboard-aware-context.ts";
 import {SearchAutocomplete} from "@/components/search-autocomplete.tsx";
+import {useAside} from "@/components/aside-context.tsx";
 
 function ThemeControl() {
   const {setColorScheme} = useMantineColorScheme();
@@ -54,13 +55,13 @@ export function ApplicationLayout({children, title = "DevTools"}: {
   const [isInitialized, setIsInitialized] = useState(false);
   const browser = useBrowser();
   const {enableClipboardAware, setEnableClipboardAware} = useClipboardAwareContext()
+  const {content: asideContent} = useAside();
 
   useEffect(() => {
     setEnableClipboardAware(settings.smartSearchEnabled)
   }, [setEnableClipboardAware, settings.smartSearchEnabled]);
 
   useEffect(() => {
-    const settings = loadSettings();
     if (settings.lastPage && settings.lastPage !== location.pathname && location.pathname === '/') {
       navigate(settings.lastPage, {replace: true});
     }
@@ -149,11 +150,12 @@ export function ApplicationLayout({children, title = "DevTools"}: {
         {children}
       </AppShell.Main>
 
-      <AppShell.Aside p="md">
-        <Text fw={500}>Aside</Text>
-        <ScrollArea>
-        </ScrollArea>
-      </AppShell.Aside>
+      {
+        asideContent &&
+          <AppShell.Aside p="md">
+            {asideContent}
+          </AppShell.Aside>
+      }
     </AppShell>
   );
 }

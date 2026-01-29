@@ -4,7 +4,7 @@ import {
   Kbd,
   type OptionsFilter
 } from "@mantine/core";
-import {tools} from "@/lib/utils.ts";
+import {tools, useOS} from "@/lib/utils.ts";
 import {useRef, useState} from "react";
 import {useDisclosure, useHotkeys} from "@mantine/hooks";
 import {useNavigate} from "react-router-dom";
@@ -12,21 +12,22 @@ import {useClipboardAwareContext} from "@/lib/clipboard-aware-context.ts";
 
 function SearchAutocomplete() {
   const [chosenTool, setChosenTool] = useState<string>("")
+  const os = useOS()
   const navigate = useNavigate()
   const searchFieldRef = useRef<HTMLInputElement>(null)
   const [searchFieldDropdownOpened, {open, close}] = useDisclosure();
-  const searchHotkey = (<><Kbd size={"xs"}>ctrl</Kbd>
+  const searchHotkey = (<><Kbd size={"xs"}>{os === "MacOS" ? "cmd" : "ctrl"}</Kbd>
     <div>+</div>
     <Kbd size={"xs"}>K</Kbd></>)
   const {enableClipboardAware, clipBoardFormat} = useClipboardAwareContext()
 
-  useHotkeys([["ctrl+K", () => {
+  useHotkeys([["mod+K", () => {
     if (searchFieldRef != null && searchFieldRef.current != null) {
       setChosenTool("")
       open()
       searchFieldRef.current.focus()
     }
-  }]], [])
+  }]], [], true)
 
   const searchableTools = tools.map((t) => ({
     group: t.group,

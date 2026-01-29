@@ -1,20 +1,25 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MantineProvider } from '@mantine/core';
-import { MemoryRouter } from 'react-router-dom';
-import { ApplicationLayout } from '../../../components/layout/application-layout.tsx';
-import { describe, it, expect, vi } from 'vitest';
+import {MantineProvider} from '@mantine/core';
+import {MemoryRouter} from 'react-router-dom';
+import {
+  ApplicationLayout
+} from '@/components/layout/application-layout.tsx';
+import {describe, expect, it, vi} from 'vitest';
 import type {ReactNode} from "react";
+import {AsideProvider} from "@/components/aside-context.tsx";
 
 // Mocking scrollIntoView as it's not implemented in jsdom
 Element.prototype.scrollIntoView = vi.fn();
 
-function TestWrapper({ children }: { children: ReactNode }) {
+function TestWrapper({children}: { children: ReactNode }) {
   return (
     <MantineProvider>
-      <MemoryRouter>
-        {children}
-      </MemoryRouter>
+      <AsideProvider>
+        <MemoryRouter>
+          {children}
+        </MemoryRouter>
+      </AsideProvider>
     </MantineProvider>
   );
 }
@@ -30,7 +35,7 @@ describe('ApplicationLayout', () => {
     );
 
     const searchInput = screen.getByPlaceholderText('Search');
-    
+
     // Dropdown should be closed initially
     expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
 
@@ -55,12 +60,12 @@ describe('ApplicationLayout', () => {
     // Type something first to test clearing
     await userEvent.type(searchInput, 'test');
     expect(searchInput.value).toBe('test');
-    
+
     await userEvent.keyboard('{Control>}k{/Control}');
 
     expect(searchInput.value).toBe('');
     expect(document.activeElement).toBe(searchInput);
-    
+
     await waitFor(() => {
       expect(searchInput).toHaveAttribute('data-expanded');
     });
