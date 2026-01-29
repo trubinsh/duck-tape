@@ -1,13 +1,35 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MantineProvider } from '@mantine/core';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { ApplicationLayout } from '../components/layout/application-layout.tsx';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { SETTINGS_KEY } from '../lib/settings.ts';
+import {type MantineColorScheme, MantineProvider} from '@mantine/core';
+import {type InitialEntry, MemoryRouter, Route, Routes} from 'react-router-dom';
+import {ApplicationLayout} from '../components/layout/application-layout.tsx';
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
+import {SETTINGS_KEY} from '../lib/settings.ts';
+import type {ReactNode} from "react";
+import {AsideProvider} from "@/components/aside-context.tsx";
 
 // Mocking scrollIntoView as it's not implemented in jsdom
 Element.prototype.scrollIntoView = vi.fn();
+
+function TestWrapper({
+                       children,
+                       initialEntries = undefined,
+                       defaultColorScheme = undefined
+                     }: {
+  children: ReactNode,
+  initialEntries?: InitialEntry[] | undefined,
+  defaultColorScheme?: MantineColorScheme | undefined
+}) {
+  return (
+    <MantineProvider defaultColorScheme={defaultColorScheme}>
+      <AsideProvider>
+        <MemoryRouter initialEntries={initialEntries}>
+          {children}
+        </MemoryRouter>
+      </AsideProvider>
+    </MantineProvider>
+  );
+}
 
 describe('ApplicationLayout Settings Persistence', () => {
   beforeEach(() => {
@@ -21,20 +43,18 @@ describe('ApplicationLayout Settings Persistence', () => {
 
   it('saves the last visited page to localStorage', async () => {
     render(
-      <MantineProvider>
-        <MemoryRouter initialEntries={['/']}>
-          <ApplicationLayout>
-            <Routes>
-              <Route path="/" element={<div>Home</div>} />
-              <Route path="/formatter" element={<div>Generator Page</div>} />
-            </Routes>
-          </ApplicationLayout>
-        </MemoryRouter>
-      </MantineProvider>
+      <TestWrapper initialEntries={['/']}>
+        <ApplicationLayout>
+          <Routes>
+            <Route path="/" element={<div>Home</div>}/>
+            <Route path="/formatter" element={<div>Generator Page</div>}/>
+          </Routes>
+        </ApplicationLayout>
+      </TestWrapper>
     );
 
     // Should initially save '/'
-    expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({ lastPage: '/' });
+    expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({lastPage: '/'});
 
     // Click on Generator link in the navbar
     const generatorNavLink = screen.getAllByText('JSON Formatter').find(el => el.closest('a'));
@@ -42,26 +62,27 @@ describe('ApplicationLayout Settings Persistence', () => {
     await userEvent.click(generatorNavLink);
 
     expect(screen.getByText('Generator Page')).toBeInTheDocument();
-    
+
     await waitFor(() => {
-        expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({ lastPage: '/formatter' });
+      expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({lastPage: '/formatter'});
     });
   });
 
   it('restores the last visited page from localStorage on initial load', async () => {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ lastPage: '/generator', theme: 'dark' }));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+      lastPage: '/generator',
+      theme: 'dark'
+    }));
 
     render(
-      <MantineProvider>
-        <MemoryRouter initialEntries={['/']}>
-          <ApplicationLayout>
-            <Routes>
-              <Route path="/" element={<div>Home</div>} />
-              <Route path="/generator" element={<div>Generator Page</div>} />
-            </Routes>
-          </ApplicationLayout>
-        </MemoryRouter>
-      </MantineProvider>
+      <TestWrapper initialEntries={['/']}>
+        <ApplicationLayout>
+          <Routes>
+            <Route path="/" element={<div>Home</div>}/>
+            <Route path="/generator" element={<div>Generator Page</div>}/>
+          </Routes>
+        </ApplicationLayout>
+      </TestWrapper>
     );
 
     // It should redirect to /generator
@@ -72,25 +93,23 @@ describe('ApplicationLayout Settings Persistence', () => {
 
   it('saves the theme to localStorage when changed', async () => {
     render(
-      <MantineProvider defaultColorScheme="dark">
-        <MemoryRouter>
-          <ApplicationLayout>
-            <div>Content</div>
-          </ApplicationLayout>
-        </MemoryRouter>
-      </MantineProvider>
+      <TestWrapper defaultColorScheme="dark">
+        <ApplicationLayout>
+          <div>Content</div>
+        </ApplicationLayout>
+      </TestWrapper>
     );
 
     const themeToggle = screen.getByLabelText('Toggle color scheme');
-    
+
     // Initial theme might be 'dark' (as per default)
     // Click to toggle to light
     await userEvent.click(themeToggle);
 
-    expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({ theme: 'light' });
+    expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({theme: 'light'});
 
     // Click again to toggle back to dark
     await userEvent.click(themeToggle);
-    expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({ theme: 'dark' });
+    expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({theme: 'dark'});
   });
 });

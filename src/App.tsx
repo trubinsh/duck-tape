@@ -1,16 +1,18 @@
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import {
   ColorSchemeScript,
   createTheme,
   MantineProvider,
   Text
 } from '@mantine/core';
+import {Notifications} from '@mantine/notifications';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {ApplicationLayout} from "@/components/layout/application-layout";
-import {EncoderDecoderPage} from "@/pages/encoder-decoder-page.tsx";
-import {Generator} from "@/pages/generator.tsx";
 import {loadSettings} from "@/lib/settings.ts";
 import {ClipboardProvider} from "@/components/clipboard-provider.tsx";
+import {AsideProvider} from "@/components/aside-context.tsx";
+import StructureFormatter from "@/pages/structure-formatter.tsx";
 
 const theme = createTheme({
   fontFamily: 'JetBrains Mono',
@@ -38,17 +40,19 @@ export default function App() {
     <>
       <ColorSchemeScript defaultColorScheme={settings.theme}/>
       <MantineProvider theme={theme} defaultColorScheme={settings.theme}>
+        <Notifications />
         <BrowserRouter>
           <ClipboardProvider>
-            <ApplicationLayout>
-              <Routes>
-                <Route path="/" element={
-                  <Text size="xl" fw={700} mb="md">Main Content</Text>
-                }/>
-                <Route path="/encoder-decoder" element={<EncoderDecoderPage/>}/>
-                <Route path="/generator" element={<Generator/>}/>
-              </Routes>
-            </ApplicationLayout>
+            <AsideProvider>
+              <ApplicationLayout>
+                <Routes>
+                  <Route path="/" element={
+                    <Text size="xl" fw={700} mb="md">Main Content</Text>
+                  }/>
+                  <Route path="/formatter" element={<StructureFormatter/>}/>
+                </Routes>
+              </ApplicationLayout>
+            </AsideProvider>
           </ClipboardProvider>
         </BrowserRouter>
       </MantineProvider>
