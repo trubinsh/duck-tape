@@ -1,5 +1,11 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {decode, encode} from '@/lib/encoder-utils';
+import {
+  decodeBase64,
+  decodeJwt,
+  decodeUrl,
+  encodeBase64,
+  encodeUrl
+} from '@/lib/encoder-utils';
 
 // Define a minimal Worker mock BEFORE importing formatter-utils
 (globalThis as any).Worker = class {
@@ -54,36 +60,66 @@ describe('encoder-utils', () => {
       default: globalThis.Worker,
     };
   });
-  describe('encode', () => {
+
+  describe('encodeBase64', () => {
     it('should encode string to Base64', async () => {
-      const input = 'hello';
-      const result = await encode(input, 'Base64');
-      expect(result).toBe(btoa(input));
+      const input = 'hello world';
+      const result = await encodeBase64(input);
+      expect(result).toBe('aGVsbG8gd29ybGQ=');
     });
 
-    it('should return original string for other formats', async () => {
-      const input = 'hello';
-      const result = await encode(input, 'JSON');
-      expect(result).toBe(input);
+    it('should encode empty string', async () => {
+      const result = await encodeBase64('');
+      expect(result).toBe('');
     });
   });
 
-  describe('decode', () => {
+  describe('encodeUrl', () => {
+    it('should encode URL component', async () => {
+      const input = 'hello world?&';
+      const result = await encodeUrl(input);
+      expect(result).toBe('hello%20world%3F%26');
+    });
+  });
+
+  describe('decodeBase64', () => {
     it('should decode Base64 string', async () => {
-      const input = btoa('hello');
-      const result = await decode(input, 'Base64');
-      expect(result).toBe('hello');
+      const input = 'aGVsbG8gd29ybGQ=';
+      const result = await decodeBase64(input);
+      expect(result).toBe('hello world');
     });
 
     it('should throw error for invalid Base64', async () => {
       const input = '!!!invalid!!!';
-      await expect(decode(input, 'Base64')).rejects.toThrow();
+      await expect(decodeBase64(input)).rejects.toThrow();
+    });
+  });
+
+  describe('decodeUrl', () => {
+    it('should decode percent-encoded string', async () => {
+      const input = 'hello%20world%3F%26';
+      const result = await decodeUrl(input);
+      expect(result).toBe('hello world?&');
+    });
+  });
+
+  describe('decodeJwt', () => {
+    it('should decode a valid JWT', async () => {
+      const header = { alg: 'HS256', typ: 'JWT' };
+      const body = { sub: '1234567890', name: 'John Doe', iat: 1516239022 };
+      const encodedHeader = btoa(JSON.stringify(header));
+      const encodedBody = btoa(JSON.stringify(body));
+      const jwt = `${encodedHeader}.${encodedBody}.signature`;
+
+      const result = await decodeJwt(jwt);
+      
+      expect(JSON.parse(result.header)).toEqual(header);
+      expect(JSON.parse(result.body)).toEqual(body);
     });
 
-    it('should return original string for other formats', async () => {
-      const input = 'hello';
-      const result = await decode(input, 'JSON');
-      expect(result).toBe(input);
+    it('should throw error for malformed JWT', async () => {
+      const jwt = 'invalid.jwt';
+      await expect(decodeJwt(jwt)).rejects.toThrow();
     });
   });
 });

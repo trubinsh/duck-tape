@@ -10,7 +10,12 @@ import {
 } from "@mantine/core";
 import {IconCheck, IconCopy, IconX} from "@tabler/icons-react";
 import {notifications} from "@mantine/notifications";
-import {decode, encode} from "@/lib/encoder-utils.ts";
+import {
+  decodeBase64,
+  decodeJwt,
+  decodeUrl,
+  encodeBase64, encodeUrl
+} from "@/lib/encoder-utils.ts";
 import {useSearchParams} from "react-router-dom";
 import type {Format} from "@/lib/utils.ts";
 import {CodeHighlight} from "@mantine/code-highlight";
@@ -33,32 +38,56 @@ function SimpleEncoder({format}: {format: Format}) {
 
   const decodeValue = (value: string) => {
     setEncodedValue(value)
-    decode(value, format)
-      .then(decoded => setDecodedValue(decoded))
-      .catch(e => {
-        console.error(e)
-        notifications.show({
-          title: 'Formatting error',
-          message: `Failed to decode ${format}`,
-          color: 'red',
-          icon: <IconX size={16}/>
-        });
-      })
+
+    let result: Promise<string> | null = null;
+
+    if (format === 'Base64') {
+      result = decodeBase64(value)
+    }
+    else if (format === 'URL'){
+      result = decodeUrl(value)
+    }
+
+    if(result) {
+      result
+        .then(decoded => setDecodedValue(decoded))
+        .catch(e => {
+          console.error(e)
+          notifications.show({
+            title: 'Formatting error',
+            message: `Failed to decode ${format}`,
+            color: 'red',
+            icon: <IconX size={16}/>
+          });
+        })
+    }
   }
 
   const encodeValue = (value: string) => {
     setDecodedValue(value)
-    encode(value, format)
-      .then(encoded => setEncodedValue(encoded))
-      .catch(e => {
-        console.error(e)
-        notifications.show({
-          title: 'Formatting error',
-          message: `Failed to encode ${format}`,
-          color: 'red',
-          icon: <IconX size={16}/>
-        });
-      })
+
+    let result: Promise<string> | null = null;
+
+    if (format === 'Base64') {
+      result = encodeBase64(value)
+    }
+    else if (format === 'URL'){
+      result = encodeUrl(value)
+    }
+
+    if(result) {
+      result
+        .then(encoded => setEncodedValue(encoded))
+        .catch(e => {
+          console.error(e)
+          notifications.show({
+            title: 'Formatting error',
+            message: `Failed to decode ${format}`,
+            color: 'red',
+            icon: <IconX size={16}/>
+          });
+        })
+    }
   }
 
   return (
@@ -143,17 +172,16 @@ function JWTEncoder() {
       return
     }
 
-    try {
-      const parts = value.split('.')
-      if (parts.length >= 1) {
-        setDecodedHeader(JSON.stringify(JSON.parse(atob(parts[0])), null, 2))
-      }
-      if (parts.length >= 2) {
-        setDecodedBody(JSON.stringify(JSON.parse(atob(parts[1])), null, 2))
-      }
-    } catch (e) {
-      console.error(e)
-    }
+    decodeJwt(value)
+      .then(({header, body}) => {
+        setDecodedHeader(header)
+        setDecodedBody(body)
+      })
+      .catch((error) => {
+        console.error('Error decoding JWT:', error)
+        setDecodedHeader('')
+        setDecodedBody('')
+      })
   }
 
   return (
