@@ -1,5 +1,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/code-highlight/styles.css';
 import {
   ColorSchemeScript,
   createTheme,
@@ -13,6 +14,7 @@ import {loadSettings} from "@/lib/settings.ts";
 import {ClipboardProvider} from "@/components/clipboard-provider.tsx";
 import {AsideProvider} from "@/components/aside-context.tsx";
 import StructureFormatter from "@/pages/structure-formatter.tsx";
+import {Encoder} from "@/pages/encoder.tsx";
 
 const theme = createTheme({
   fontFamily: 'JetBrains Mono',
@@ -50,6 +52,7 @@ export default function App() {
                     <Text size="xl" fw={700} mb="md">Main Content</Text>
                   }/>
                   <Route path="/formatter" element={<StructureFormatter/>}/>
+                  <Route path="/encoder" element={<Encoder/>}/>
                 </Routes>
               </ApplicationLayout>
             </AsideProvider>

@@ -1,7 +1,7 @@
 import type {Format} from "@/lib/utils.ts";
 import xmlFormat from 'xml-formatter';
 
-export type Action = 'indent'
+export type Action = 'indent' | 'encode' | 'decode';
 
 // Handle messages from the main thread
 self.onmessage = (event: MessageEvent) => {
@@ -12,6 +12,8 @@ self.onmessage = (event: MessageEvent) => {
     if (action === 'indent') {
       result = formatString(value.data, value.format, value.indentSize)
     }
+    else if (action === 'encode') result = encode(value.data, value.format)
+    else if (action === 'decode') result = decode(value.data, value.format)
     else {
       throw new Error(`Unknown action: ${action}`)
     }
@@ -45,6 +47,18 @@ function formatString(str: string, format: Format, indentSize: number) {
     else return header + "\n" + xmlFormat(str, { collapseContent: true, indentation: ' '.repeat(indentSize), lineSeparator: '\n' })
   }
   return str
+}
+
+function encode(str: string, format: Format) {
+  if (format === 'Base64') return btoa(str);
+  if (format === 'URL') return encodeURIComponent(str);
+  else return str;
+}
+
+function decode(str: string, format: Format) {
+  if (format === 'Base64') return atob(str);
+  if (format === 'URL') return decodeURIComponent(str);
+  else return str;
 }
 
 export {};

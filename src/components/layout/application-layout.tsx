@@ -146,7 +146,7 @@ export function ApplicationLayout({children, title = "DevTools"}: {
         </AppShell.Section>
       </AppShell.Navbar>
 
-      <AppShell.Main>
+      <AppShell.Main style={{ display: 'flex', flexDirection: 'column' }}>
         {children}
       </AppShell.Main>
 
