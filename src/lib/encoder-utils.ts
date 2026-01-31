@@ -1,45 +1,29 @@
-import type {Format} from "@/lib/utils.ts";
-import MyWorker from './worker?worker';
+import {postMessage} from "@/lib/worker-utils.ts";
 
-
-function encode(data: string, format: Format): Promise<string> {
-  const w = new MyWorker();
-  return new Promise((resolve, reject) => {
-    w.onmessage = (e: MessageEvent) => {
-      if (e.data.type === 'success') {
-        resolve(e.data.result);
-      } else {
-        reject(new Error(e.data.error));
-      }
-      w.terminate();
-    };
-
-    w.onerror = (error: any) => {
-      reject(error);
-      w.terminate();
-    };
-    w.postMessage({action: "encode", value: {data, format}});
-  });
+function encodeBase64(data: string): Promise<string> {
+  return postMessage(() => btoa(data));
 }
 
-function decode(data: string, format: Format): Promise<string> {
-  const w = new MyWorker();
-  return new Promise((resolve, reject) => {
-    w.onmessage = (e: MessageEvent) => {
-      if (e.data.type === 'success') {
-        resolve(e.data.result);
-      } else {
-        reject(new Error(e.data.error));
-      }
-      w.terminate();
-    };
-
-    w.onerror = (error: any) => {
-      reject(error);
-      w.terminate();
-    };
-    w.postMessage({action: "decode", value: {data, format}});
-  });
+function encodeUrl(data: string): Promise<string> {
+  return postMessage(() => encodeURIComponent(data));
 }
 
-export {encode, decode};
+function decodeBase64(data: string): Promise<string> {
+  return postMessage(() => atob(data));
+}
+
+function decodeUrl(data: string): Promise<string> {
+  return postMessage(() => decodeURIComponent(data));
+}
+
+function decodeJwt(data: string): Promise<{ header: string, body: string }> {
+  const fun = () => {
+    const parts = data.split('.')
+    const header = JSON.stringify(JSON.parse(atob(parts[0])), null, 2)
+    const body = JSON.stringify(JSON.parse(atob(parts[1])), null, 2)
+    return {header, body}
+  }
+  return postMessage(fun);
+}
+
+export {encodeBase64, encodeUrl, decodeUrl, decodeBase64, decodeJwt};
