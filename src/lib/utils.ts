@@ -7,6 +7,7 @@ export type Format =
   | 'HTML'
   | 'Base64'
   | 'Text'
+  | 'JWT'
 
 export interface Tool {
   group: string,
@@ -20,6 +21,12 @@ export const tools: Tool[] = [
     group: 'Formatter',
     redirectUrl: '/formatter',
     formats: ['JSON', 'XML', 'HTML'],
+    clipboardAware: true
+  },
+  {
+    group: 'Encode/Decode',
+    redirectUrl: '/encoder',
+    formats: ['Base64', 'URL', 'JWT'],
     clipboardAware: true
   }
 ]
