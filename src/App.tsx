@@ -15,6 +15,7 @@ import {ClipboardProvider} from "@/components/clipboard-provider.tsx";
 import {AsideProvider} from "@/components/aside-context.tsx";
 import StructureFormatter from "@/pages/structure-formatter.tsx";
 import {Encoder} from "@/pages/encoder.tsx";
+import DiffViewer from "@/pages/diff-viewer.tsx";
 
 const theme = createTheme({
   fontFamily: 'JetBrains Mono',
@@ -53,6 +54,7 @@ export default function App() {
                   }/>
                   <Route path="/formatter" element={<StructureFormatter/>}/>
                   <Route path="/encoder" element={<Encoder/>}/>
+                  <Route path="/diff-viewer" element={<DiffViewer/>}/>
                 </Routes>
               </ApplicationLayout>
             </AsideProvider>
