@@ -31,7 +31,7 @@ function SearchAutocomplete() {
 
   const searchableTools = tools.map((t) => ({
     group: t.group,
-    items: t.formats.map(f => `${f} ${t.group}`)
+    items: t.formats?.map(f => `${f} ${t.group}`) || [`${t.group}`]
   }))
 
   const onChosenToolSubmit = (value: string) => {

@@ -54,7 +54,10 @@ export function ApplicationLayout({children, title = "DevTools"}: {
   const navigate = useNavigate();
   const [isInitialized, setIsInitialized] = useState(false);
   const browser = useBrowser();
-  const {enableClipboardAware, setEnableClipboardAware} = useClipboardAwareContext()
+  const {
+    enableClipboardAware,
+    setEnableClipboardAware
+  } = useClipboardAwareContext()
   const {content: asideContent} = useAside();
 
   useEffect(() => {
@@ -125,20 +128,37 @@ export function ApplicationLayout({children, title = "DevTools"}: {
         </AppShell.Section>
         <AppShell.Section grow component={ScrollArea}>
           {
-            tools.map((tool) => (
-              <NavLink
-                key={tool.redirectUrl}
-                label={tool.group}
-                childrenOffset={28}
-                defaultOpened
-              >
-                {
-                  tool.formats.map(f => (
-                    <NavLink label={`${f} ${tool.group}`} key={`${f}-${tool.redirectUrl}`} component={Link} to={`${tool.redirectUrl}?format=${f}`}/>
-                  ))
-                }
-              </NavLink>
-            ))
+            tools.map((tool) => {
+              if (tool.formats) {
+                return (
+                  <NavLink
+                    key={tool.redirectUrl}
+                    label={tool.group}
+                    childrenOffset={28}
+                    defaultOpened
+                  >
+                    {
+                      tool.formats.map(f => (
+                        <NavLink label={`${f} ${tool.group}`}
+                                 key={`${f}-${tool.redirectUrl}`}
+                                 component={Link}
+                                 to={`${tool.redirectUrl}?format=${f}`}/>
+                      ))
+                    }
+                  </NavLink>
+                )
+              }
+              else {
+                return <NavLink
+                  key={tool.redirectUrl}
+                  to={tool.redirectUrl}
+                  component={Link}
+                  label={tool.group}
+                  childrenOffset={28}
+                  defaultOpened
+                />
+              }
+            })
           }
         </AppShell.Section>
         <AppShell.Section>
@@ -146,7 +166,7 @@ export function ApplicationLayout({children, title = "DevTools"}: {
         </AppShell.Section>
       </AppShell.Navbar>
 
-      <AppShell.Main style={{ display: 'flex', flexDirection: 'column' }}>
+      <AppShell.Main style={{display: 'flex', flexDirection: 'column'}}>
         {children}
       </AppShell.Main>
 

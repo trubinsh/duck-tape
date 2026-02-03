@@ -12,7 +12,7 @@ export type Format =
 export interface Tool {
   group: string,
   redirectUrl: string,
-  formats: Format[],
+  formats?: Format[],
   clipboardAware: boolean
 }
 
@@ -28,6 +28,11 @@ export const tools: Tool[] = [
     redirectUrl: '/encoder',
     formats: ['Base64', 'URL', 'JWT'],
     clipboardAware: true
+  },
+  {
+    group: 'Diff Viewer',
+    redirectUrl: '/diff-viewer',
+    clipboardAware: false
   }
 ]
 
