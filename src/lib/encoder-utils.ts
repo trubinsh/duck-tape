@@ -1,29 +1,23 @@
 import {postMessage} from "@/lib/worker-utils.ts";
 
 function encodeBase64(data: string): Promise<string> {
-  return postMessage(() => btoa(data));
+  return postMessage<string>({type: 'ENCODE_BASE64', data});
 }
 
 function encodeUrl(data: string): Promise<string> {
-  return postMessage(() => encodeURIComponent(data));
+  return postMessage<string>({type: 'ENCODE_URL', data});
 }
 
 function decodeBase64(data: string): Promise<string> {
-  return postMessage(() => atob(data));
+  return postMessage<string>({type: 'DECODE_BASE64', data});
 }
 
 function decodeUrl(data: string): Promise<string> {
-  return postMessage(() => decodeURIComponent(data));
+  return postMessage<string>({type: 'DECODE_URL', data});
 }
 
 function decodeJwt(data: string): Promise<{ header: string, body: string }> {
-  const fun = () => {
-    const parts = data.split('.')
-    const header = JSON.stringify(JSON.parse(atob(parts[0])), null, 2)
-    const body = JSON.stringify(JSON.parse(atob(parts[1])), null, 2)
-    return {header, body}
-  }
-  return postMessage(fun);
+  return postMessage<{ header: string, body: string }>({type: 'DECODE_JWT', data});
 }
 
 export {encodeBase64, encodeUrl, decodeUrl, decodeBase64, decodeJwt};
