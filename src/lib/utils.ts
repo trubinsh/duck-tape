@@ -9,30 +9,83 @@ export type Format =
   | 'Text'
   | 'JWT'
 
-export interface Tool {
+export interface ToolGroup {
   group: string,
-  redirectUrl: string,
-  formats?: Format[],
-  clipboardAware: boolean
+  clipboardAware: boolean,
+  tools: Tool[]
 }
 
-export const tools: Tool[] = [
+export interface Tool {
+  name: string,
+  redirectUrl: string,
+  format?: Format,
+}
+
+export function isToolGroup(tool: ToolGroup | Tool): tool is ToolGroup {
+  return 'group' in tool;
+}
+
+export const tools: (ToolGroup | Tool)[] = [
   {
     group: 'Formatter',
-    redirectUrl: '/formatter',
-    formats: ['JSON', 'XML', 'HTML'],
-    clipboardAware: true
+    clipboardAware: true,
+    tools: [
+      {
+        name: 'JSON Formatter',
+        format: 'JSON',
+        redirectUrl: "/formatter?format=JSON"
+      },
+      {
+        name: 'XML Formatter',
+        format: 'XML',
+        redirectUrl: "/formatter?format=XML"
+      },
+      {
+        name: 'HTML Formatter',
+        format: 'HTML',
+        redirectUrl: "/formatter?format=HTML"
+      }
+    ]
   },
   {
     group: 'Encode/Decode',
     redirectUrl: '/encoder',
-    formats: ['Base64', 'URL', 'JWT'],
-    clipboardAware: true
+    clipboardAware: true,
+    tools: [
+      {
+        name: "Base64 Encode/Decode",
+        format: "Base64",
+        redirectUrl: "/encoder?format=Base64"
+      },
+      {
+        name: "URL Encode/Decode",
+        format: "URL",
+        redirectUrl: "/encoder?format=URL"
+      },
+      {
+        name: "JWT Encode/Decode",
+        format: "JWT",
+        redirectUrl: "/encoder?format=JWT"
+      }
+    ]
   },
   {
-    group: 'Diff Viewer',
-    redirectUrl: '/diff-viewer',
-    clipboardAware: false
+    name: 'Diff Viewer',
+    redirectUrl: '/diff-viewer'
+  },
+  {
+    group: 'Generator',
+    clipboardAware: false,
+    tools: [
+      {
+        name: 'Password Generator',
+        redirectUrl: '/password-generator'
+      },
+      {
+        name: 'UUID Generator',
+        redirectUrl: '/uuid-generator'
+      }
+    ]
   }
 ]
 
@@ -66,6 +119,7 @@ export function useBrowser() {
       browserName = 'IE';
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBrowser(browserName);
   }, []);
 
@@ -98,6 +152,7 @@ export function useOS() {
       detectedOS = 'Linux';
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOS(detectedOS);
   }, []);
 

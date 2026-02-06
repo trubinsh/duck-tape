@@ -1,0 +1,15 @@
+.uuid-output-field {
+    position: relative;
+    flex: 1;
+    margin-top: 1rem;
+}
+
+.uuid-generator-container {
+    position: relative;
+    flex: 1;
+    margin-top: 1rem;
+}
+
+.generated-uuids-fields {
+    margin-top: 3rem;
+}

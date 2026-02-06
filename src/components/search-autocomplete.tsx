@@ -4,7 +4,7 @@ import {
   Kbd,
   type OptionsFilter
 } from "@mantine/core";
-import {tools, useOS} from "@/lib/utils.ts";
+import {isToolGroup, tools, useOS} from "@/lib/utils.ts";
 import {useRef, useState} from "react";
 import {useDisclosure, useHotkeys} from "@mantine/hooks";
 import {useNavigate} from "react-router-dom";
@@ -29,16 +29,38 @@ function SearchAutocomplete() {
     }
   }]], [], true)
 
-  const searchableTools = tools.map((t) => ({
-    group: t.group,
-    items: t.formats?.map(f => `${f} ${t.group}`) || [`${t.group}`]
-  }))
+  const searchableTools = tools.map((t) => {
+    if (isToolGroup(t)) {
+      return ({
+        group: t.group,
+        items: t.tools.map(f => f.name)
+      })
+    }
+    else {
+      return ({
+        group: t.name,
+        items: [t.name]
+      })
+    }
+  })
 
   const onChosenToolSubmit = (value: string) => {
     console.debug(`Chosen tool ${value}`)
-    const tool = tools.find(t => t.group === value)
+    const tool = tools.find(t => {
+      if (isToolGroup(t)) {
+        return t.tools.find(f => f.name === value)
+      }
+      else {
+        return t.name === value
+      }
+    })
     if (!tool) return
-    navigate(tool.redirectUrl)
+    if(isToolGroup(tool)) {
+      navigate(tool.tools.find(f => f.name === value)!.redirectUrl)
+    }
+    else {
+      navigate(tool.redirectUrl!)
+    }
     close()
   }
 
@@ -50,7 +72,7 @@ function SearchAutocomplete() {
 
     if(enableClipboardAware) {
       filtered.forEach((option) => {
-        if (tools.find(t => t.group === option.group)?.clipboardAware) {
+        if (tools.find(t => isToolGroup(t) && t.group === option.group && t.clipboardAware)) {
           option.items.sort((a, b) => {
             if (a.label.includes(clipBoardFormat) && !b.label.includes(clipBoardFormat)) return -1
             if (!a.label.includes(clipBoardFormat) && b.label.includes(clipBoardFormat)) return 1

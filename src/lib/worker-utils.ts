@@ -1,9 +1,24 @@
 import MyWorker from './worker?worker';
+import type {Format} from "@/lib/utils.ts";
 
-function postMessage<T>(fun: () => T): Promise<T> {
+export type WorkerTask =
+  | { type: 'GENERATE_PASSWORD', length: number, characters: string[] }
+  | { type: 'GENERATE_UUID', count: number, version: string }
+  | { type: 'FORMAT_STRING', data: string, format: Format, indentSize: number }
+  | { type: 'ENCODE_BASE64', data: string }
+  | { type: 'DECODE_BASE64', data: string }
+  | { type: 'ENCODE_URL', data: string }
+  | { type: 'DECODE_URL', data: string }
+  | { type: 'DECODE_JWT', data: string };
+
+export type WorkerResponse<T = any> =
+  | { type: 'success', result: T }
+  | { type: 'error', error: string, stack?: string };
+
+function postMessage<T>(task: WorkerTask): Promise<T> {
   const w = new MyWorker();
   return new Promise((resolve, reject) => {
-    w.onmessage = (e: MessageEvent) => {
+    w.onmessage = (e: MessageEvent<WorkerResponse<T>>) => {
       if (e.data.type === 'success') {
         resolve(e.data.result);
       } else {
@@ -16,7 +31,7 @@ function postMessage<T>(fun: () => T): Promise<T> {
       reject(error);
       w.terminate();
     };
-    w.postMessage({executableFunction: fun});
+    w.postMessage(task);
   });
 }
 

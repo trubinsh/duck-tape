@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import {IconMoon, IconSun} from '@tabler/icons-react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import {tools, useBrowser} from "@/lib/utils.ts";
+import {isToolGroup, tools, useBrowser} from "@/lib/utils.ts";
 import * as React from "react";
 import {type BaseSyntheticEvent, useEffect, useState} from "react";
 import {loadSettings, saveSettings} from "@/lib/settings.ts";
@@ -129,21 +129,21 @@ export function ApplicationLayout({children, title = "DevTools"}: {
         <AppShell.Section grow component={ScrollArea}>
           {
             tools.map((tool) => {
-              if (tool.formats) {
+              if (isToolGroup(tool)) {
                 return (
                   <NavLink
-                    key={tool.redirectUrl}
+                    key={tool.group}
                     label={tool.group}
                     childrenOffset={28}
                     defaultOpened
                   >
                     {
-                      tool.formats.map(f => (
-                        <NavLink label={`${f} ${tool.group}`}
-                                 key={`${f}-${tool.redirectUrl}`}
-                                 component={Link}
-                                 to={`${tool.redirectUrl}?format=${f}`}/>
-                      ))
+                      tool.tools.map(t => (
+                          <NavLink label={`${t.name}`}
+                                   key={`${t.name}-${t.redirectUrl}`}
+                                   component={Link}
+                                   to={t.redirectUrl}/>
+                        ))
                     }
                   </NavLink>
                 )
@@ -151,9 +151,9 @@ export function ApplicationLayout({children, title = "DevTools"}: {
               else {
                 return <NavLink
                   key={tool.redirectUrl}
-                  to={tool.redirectUrl}
+                  to={tool.redirectUrl!}
                   component={Link}
-                  label={tool.group}
+                  label={tool.name}
                   childrenOffset={28}
                   defaultOpened
                 />

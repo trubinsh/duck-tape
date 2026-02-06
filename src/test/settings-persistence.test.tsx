@@ -56,7 +56,7 @@ describe('ApplicationLayout Settings Persistence', () => {
     // Should initially save '/'
     expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({lastPage: '/'});
 
-    // Click on Generator link in the navbar
+    // Click on PasswordGenerator link in the navbar
     const generatorNavLink = screen.getAllByText('JSON Formatter').find(el => el.closest('a'));
     if (!generatorNavLink) throw new Error('Generator link not found');
     await userEvent.click(generatorNavLink);
