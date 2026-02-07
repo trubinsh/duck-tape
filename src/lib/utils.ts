@@ -86,6 +86,16 @@ export const tools: (ToolGroup | Tool)[] = [
         redirectUrl: '/uuid-generator'
       }
     ]
+  },
+  {
+    group: 'Converter',
+    clipboardAware: false,
+    tools: [
+      {
+        name: 'Timestamp converter',
+        redirectUrl: '/timestamp-converter'
+      }
+    ]
   }
 ]
 
