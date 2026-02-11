@@ -19,6 +19,7 @@ import DiffViewer from "@/pages/diff-viewer.tsx";
 import {PasswordGenerator} from "@/pages/password-generator.tsx";
 import {UUIDGenerator} from "@/pages/uuid-generator.tsx";
 import {TimestampConverter} from "@/pages/timestamp-converter.tsx";
+import {RegexPage} from "@/pages/regex.tsx";
 
 const theme = createTheme({
   fontFamily: 'JetBrains Mono',
@@ -61,6 +62,7 @@ export default function App() {
                   <Route path="/password-generator" element={<PasswordGenerator/>}/>
                   <Route path="/uuid-generator" element={<UUIDGenerator/>}/>
                   <Route path="/timestamp-converter" element={<TimestampConverter/>}/>
+                  <Route path="/regex" element={<RegexPage/>}/>
                 </Routes>
               </ApplicationLayout>
             </AsideProvider>
