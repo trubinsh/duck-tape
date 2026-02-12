@@ -88,6 +88,10 @@ export const tools: (ToolGroup | Tool)[] = [
     ]
   },
   {
+    name: 'Regex',
+    redirectUrl: '/regex'
+  },
+  {
     group: 'Converter',
     clipboardAware: false,
     tools: [
