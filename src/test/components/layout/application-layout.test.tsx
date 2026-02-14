@@ -2,12 +2,9 @@ import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {MantineProvider} from '@mantine/core';
 import {MemoryRouter} from 'react-router-dom';
-import {
-  ApplicationLayout
-} from '@/components/layout/application-layout.tsx';
+import {ApplicationLayout} from '@/components/layout/application-layout.tsx';
 import {describe, expect, it, vi} from 'vitest';
 import type {ReactNode} from "react";
-import {AsideProvider} from "@/components/aside-context.tsx";
 
 // Mocking scrollIntoView as it's not implemented in jsdom
 Element.prototype.scrollIntoView = vi.fn();
@@ -15,11 +12,9 @@ Element.prototype.scrollIntoView = vi.fn();
 function TestWrapper({children}: { children: ReactNode }) {
   return (
     <MantineProvider>
-      <AsideProvider>
-        <MemoryRouter>
-          {children}
-        </MemoryRouter>
-      </AsideProvider>
+      <MemoryRouter>
+        {children}
+      </MemoryRouter>
     </MantineProvider>
   );
 }

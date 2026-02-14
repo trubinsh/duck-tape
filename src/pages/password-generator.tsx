@@ -1,4 +1,3 @@
-import {AsideContent} from "@/components/aside-context.tsx";
 import {useEffect, useState} from "react";
 import {
   ActionIcon,
@@ -53,28 +52,28 @@ function PasswordGenerator() {
 
   return (
     <div>
-      <AsideContent>
-        <Grid>
-          <Grid.Col span={6}>
-            <NumberInput label={"Password length"} value={length} min={8}
-                         max={128} onChange={(v) => setLength(v as number)}/>
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <Checkbox label="Include numbers" checked={includeNumbers}
-                      onChange={(e) => setIncludeNumbers(e.target.checked)}/>
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <Checkbox label="Include upper case letter" checked={includeUpper}
-                      onChange={(e) => setIncludeUpper(e.target.checked)}/>
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <Checkbox label="Include special characters"
-                      checked={includeSpecial}
-                      onChange={(e) => setIncludeSpecial(e.target.checked)}/>
-          </Grid.Col>
-        </Grid>
-        <Button onClick={onGeneratePassword}>Generate</Button>
-      </AsideContent>
+      {/*<AsideContent>*/}
+      {/*  <Grid>*/}
+      {/*    <Grid.Col span={6}>*/}
+      {/*      <NumberInput label={"Password length"} value={length} min={8}*/}
+      {/*                   max={128} onChange={(v) => setLength(v as number)}/>*/}
+      {/*    </Grid.Col>*/}
+      {/*    <Grid.Col span={6}>*/}
+      {/*      <Checkbox label="Include numbers" checked={includeNumbers}*/}
+      {/*                onChange={(e) => setIncludeNumbers(e.target.checked)}/>*/}
+      {/*    </Grid.Col>*/}
+      {/*    <Grid.Col span={6}>*/}
+      {/*      <Checkbox label="Include upper case letter" checked={includeUpper}*/}
+      {/*                onChange={(e) => setIncludeUpper(e.target.checked)}/>*/}
+      {/*    </Grid.Col>*/}
+      {/*    <Grid.Col span={6}>*/}
+      {/*      <Checkbox label="Include special characters"*/}
+      {/*                checked={includeSpecial}*/}
+      {/*                onChange={(e) => setIncludeSpecial(e.target.checked)}/>*/}
+      {/*    </Grid.Col>*/}
+      {/*  </Grid>*/}
+      {/*  <Button onClick={onGeneratePassword}>Generate</Button>*/}
+      {/*</AsideContent>*/}
       <div style={{flex: 1, position: 'relative', height: '100%'}}>
         <div style={{position: 'absolute', top: 10, right: 20, zIndex: 10}}>
           <CopyButton value={password} timeout={2000}>

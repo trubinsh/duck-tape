@@ -1,5 +1,4 @@
 import {useState} from "react";
-import {AsideContent} from "@/components/aside-context.tsx";
 import {
   ActionIcon,
   CopyButton,
@@ -92,9 +91,6 @@ function SimpleEncoder({format}: {format: Format}) {
 
   return (
     <div style={{flex: 1, width: '100%', display: 'flex', flexDirection: 'column'}}>
-      <AsideContent>
-        Info
-      </AsideContent>
       <Grid style={{flex: 1, margin: 0}}>
         <Grid.Col span={6} style={{display: 'flex', flexDirection: 'column', height: '100%'}}>
           <Title order={6}>Plain text</Title>
@@ -186,9 +182,6 @@ function JWTEncoder() {
 
   return (
     <div style={{flex: 1, width: '100%', display: 'flex', flexDirection: 'column'}}>
-      <AsideContent>
-        Info
-      </AsideContent>
       <Grid style={{flex: 1, margin: 0}}>
         <Grid.Col span={6} style={{display: 'flex', flexDirection: 'column', height: '100%'}}>
           <Title order={6}>Encoded</Title>

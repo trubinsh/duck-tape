@@ -11,7 +11,6 @@ import {
 } from "@mantine/core";
 import {useEffect, useState} from "react";
 import {IconCheck, IconCopy, IconX} from "@tabler/icons-react";
-import {AsideContent} from "@/components/aside-context.tsx";
 import {postMessage} from "@/lib/worker-utils.ts";
 import {notifications} from "@mantine/notifications";
 
@@ -66,20 +65,20 @@ function UUIDGenerator() {
 
   return (
     <>
-      <AsideContent>
-        <Grid>
-          <Grid.Col span={6}>
-            <NativeSelect label={"Version"} data={uuidVersions} value={version}
-                          onChange={e => setVersion(e.currentTarget.value)}/>
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <NumberInput label={"Count"} value={count} min={1} max={30}
-                         onChange={e => setCount(e as number)}/>
-          </Grid.Col>
-        </Grid>
-        <Button mt={"1rem"}
-                onClick={() => generateUuid(version)}>Generate</Button>
-      </AsideContent>
+      {/*<AsideContent>*/}
+      {/*  <Grid>*/}
+      {/*    <Grid.Col span={6}>*/}
+      {/*      <NativeSelect label={"Version"} data={uuidVersions} value={version}*/}
+      {/*                    onChange={e => setVersion(e.currentTarget.value)}/>*/}
+      {/*    </Grid.Col>*/}
+      {/*    <Grid.Col span={6}>*/}
+      {/*      <NumberInput label={"Count"} value={count} min={1} max={30}*/}
+      {/*                   onChange={e => setCount(e as number)}/>*/}
+      {/*    </Grid.Col>*/}
+      {/*  </Grid>*/}
+      {/*  <Button mt={"1rem"}*/}
+      {/*          onClick={() => generateUuid(version)}>Generate</Button>*/}
+      {/*</AsideContent>*/}
       <div className={'uuid-generator-container'}>
         <div style={{position: 'absolute', top: 0, right: 20, zIndex: 10}}>
           <CopyButton value={uuids.join('\n')} timeout={2000}>

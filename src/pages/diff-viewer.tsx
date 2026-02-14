@@ -1,6 +1,5 @@
 import './diff-viewer.css'
 import {MergeView} from "@codemirror/merge"
-import {AsideContent} from "@/components/aside-context.tsx";
 import {basicSetup} from "codemirror";
 import {useEffect, useRef} from "react";
 import {json} from "@codemirror/lang-json";
@@ -37,9 +36,6 @@ export default function DiffViewer() {
 
   return (
     <div style={{height: 'calc(100vh - 60px - 32px)', width: '100%'}}>
-      <AsideContent>
-        Info
-      </AsideContent>
       <div ref={mergeViewRef} id="diff-viewer" className={"diff-viewer-root"}/>
     </div>
   );

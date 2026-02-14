@@ -1,11 +1,10 @@
 import {
   ActionIcon,
-  AppShell,
+  AppShell, Divider,
   Group,
   NavLink,
   ScrollArea,
   Switch,
-  Text,
   useComputedColorScheme,
   useMantineColorScheme
 } from '@mantine/core';
@@ -17,7 +16,6 @@ import {type BaseSyntheticEvent, useEffect, useState} from "react";
 import {loadSettings, saveSettings} from "@/lib/settings.ts";
 import {useClipboardAwareContext} from "@/lib/clipboard-aware-context.ts";
 import {SearchAutocomplete} from "@/components/search-autocomplete.tsx";
-import {useAside} from "@/components/aside-context.tsx";
 
 function ThemeControl() {
   const {setColorScheme} = useMantineColorScheme();
@@ -45,7 +43,7 @@ function ThemeControl() {
   );
 }
 
-export function ApplicationLayout({children, title = "DevTools"}: {
+export function ApplicationLayout({children}: {
   children: React.ReactNode,
   title?: string
 }) {
@@ -58,7 +56,6 @@ export function ApplicationLayout({children, title = "DevTools"}: {
     enableClipboardAware,
     setEnableClipboardAware
   } = useClipboardAwareContext()
-  const {content: asideContent} = useAside();
 
   useEffect(() => {
     setEnableClipboardAware(settings.smartSearchEnabled)
@@ -85,9 +82,7 @@ export function ApplicationLayout({children, title = "DevTools"}: {
 
   return (
     <AppShell
-      header={{height: 60}}
       navbar={{width: 300, breakpoint: 'sm'}}
-      aside={{width: 300, breakpoint: 'md'}}
       padding="md"
       styles={{
         main: {
@@ -104,25 +99,11 @@ export function ApplicationLayout({children, title = "DevTools"}: {
         },
       }}
     >
-      <AppShell.Header>
-        <Group h="100%" px="md" justify="space-between">
-          <Text fw={700} component={Link} to="/"
-                style={{textDecoration: 'none', color: 'inherit'}}>
-            {title}
-          </Text>
-          <Group gap={"md"}>
-            {
-              // SmartSearch not supported on Safari yet. Safari has a lockdown on read from clipboard only for user-specific actions, Clipboard API does not allow direct reads
-              browser !== "Safari" && <Switch checked={enableClipboardAware}
-                                              onChange={handleSmartSearchToggle}
-                                              label={"Smart Search"}></Switch>
-            }
-            <ThemeControl/>
-          </Group>
-        </Group>
-      </AppShell.Header>
-
       <AppShell.Navbar p="md">
+        <AppShell.Section>
+          DuckTape
+        </AppShell.Section>
+        <Divider mt={"md"} mb={"md"}/>
         <AppShell.Section>
           <SearchAutocomplete/>
         </AppShell.Section>
@@ -162,20 +143,21 @@ export function ApplicationLayout({children, title = "DevTools"}: {
           }
         </AppShell.Section>
         <AppShell.Section>
-          <Text fw={500}>Navbar Footer</Text>
+          <Group gap={"md"}>
+          <ThemeControl/>
+            {
+              // SmartSearch not supported on Safari yet. Safari has a lockdown on read from clipboard only for user-specific actions, Clipboard API does not allow direct reads
+              browser !== "Safari" && <Switch checked={enableClipboardAware}
+                                              onChange={handleSmartSearchToggle}
+                                              label={"Smart Search"}></Switch>
+            }
+          </Group>
         </AppShell.Section>
       </AppShell.Navbar>
 
       <AppShell.Main style={{display: 'flex', flexDirection: 'column'}}>
         {children}
       </AppShell.Main>
-
-      {
-        asideContent &&
-          <AppShell.Aside p="md">
-            {asideContent}
-          </AppShell.Aside>
-      }
     </AppShell>
   );
 }

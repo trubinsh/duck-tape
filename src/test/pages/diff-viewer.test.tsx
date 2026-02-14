@@ -2,13 +2,6 @@ import {render, screen} from '@testing-library/react';
 import {describe, expect, it, vi} from 'vitest';
 import DiffViewer from '@/pages/diff-viewer';
 import {MantineProvider} from '@mantine/core';
-import {AsideProvider, useAside} from "@/components/aside-context.tsx";
-
-// Helper to display aside content in tests
-function AsideDisplay() {
-  const {content} = useAside();
-  return <div data-testid="aside-content">{content}</div>;
-}
 
 // Mock @codemirror/merge
 vi.mock('@codemirror/merge', () => {
@@ -47,26 +40,11 @@ describe('DiffViewer', () => {
   it('renders two editors', () => {
     render(
       <MantineProvider>
-        <AsideProvider>
           <DiffViewer/>
-        </AsideProvider>
       </MantineProvider>
     );
 
     const editors = screen.getAllByTestId('codemirror-mock');
     expect(editors).toHaveLength(2);
-  });
-
-  it('renders aside content', () => {
-    render(
-      <MantineProvider>
-        <AsideProvider>
-          <DiffViewer/>
-          <AsideDisplay/>
-        </AsideProvider>
-      </MantineProvider>
-    );
-
-    expect(screen.getByTestId('aside-content')).toHaveTextContent('Info');
   });
 });
