@@ -9,7 +9,6 @@ import {ActionIcon, Button, CopyButton, Grid, NumberInput, Tooltip} from "@manti
 import {notifications} from "@mantine/notifications";
 import {IconCheck, IconCopy, IconX} from "@tabler/icons-react";
 import {indentString} from "@/lib/formatter-utils.ts";
-import {AsideContent} from "@/components/aside-context.tsx";
 import {type Format} from "@/lib/utils.ts";
 
 export default function StructureFormatter() {
@@ -38,58 +37,58 @@ export default function StructureFormatter() {
 
   return (
     <div style={{height: 'calc(100vh - 60px - 32px)', width: '100%'}}>
-      <AsideContent>
-        <Grid>
-          <Grid.Col span={6}>
-            <NumberInput label={"Indent Size"} value={formatIndentSize} min={1}
-                         max={8}
-                         onChange={setFormatIndentSize}/>
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <div/>
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <Button
-              fullWidth
-              onClick={() => {
-                indentString(value, format, parseInt(formatIndentSize as string))
-                  .then(formatted => setValue(formatted))
-                  .catch(e => {
-                    console.error(e);
-                    notifications.show({
-                      title: 'Formatting error',
-                      message: `Failed to format ${format}`,
-                      color: 'red',
-                      icon: <IconX size={16}/>
-                    });
-                  });
-              }}
-            >
-              Indent
-            </Button>
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <Button
-              fullWidth
-              onClick={() => {
-                indentString(value, format, 0)
-                  .then(formatted => setValue(formatted))
-                  .catch(e => {
-                    console.error(e);
-                    notifications.show({
-                      title: 'Formatting error',
-                      message: `Failed to format ${format}`,
-                      color: 'red',
-                      icon: <IconX size={16}/>
-                    });
-                  });
-              }}
-            >
-              Inline
-            </Button>
-          </Grid.Col>
-        </Grid>
-      </AsideContent>
+      {/*<AsideContent>*/}
+      {/*  <Grid>*/}
+      {/*    <Grid.Col span={6}>*/}
+      {/*      <NumberInput label={"Indent Size"} value={formatIndentSize} min={1}*/}
+      {/*                   max={8}*/}
+      {/*                   onChange={setFormatIndentSize}/>*/}
+      {/*    </Grid.Col>*/}
+      {/*    <Grid.Col span={6}>*/}
+      {/*      <div/>*/}
+      {/*    </Grid.Col>*/}
+      {/*    <Grid.Col span={6}>*/}
+      {/*      <Button*/}
+      {/*        fullWidth*/}
+      {/*        onClick={() => {*/}
+      {/*          indentString(value, format, parseInt(formatIndentSize as string))*/}
+      {/*            .then(formatted => setValue(formatted))*/}
+      {/*            .catch(e => {*/}
+      {/*              console.error(e);*/}
+      {/*              notifications.show({*/}
+      {/*                title: 'Formatting error',*/}
+      {/*                message: `Failed to format ${format}`,*/}
+      {/*                color: 'red',*/}
+      {/*                icon: <IconX size={16}/>*/}
+      {/*              });*/}
+      {/*            });*/}
+      {/*        }}*/}
+      {/*      >*/}
+      {/*        Indent*/}
+      {/*      </Button>*/}
+      {/*    </Grid.Col>*/}
+      {/*    <Grid.Col span={6}>*/}
+      {/*      <Button*/}
+      {/*        fullWidth*/}
+      {/*        onClick={() => {*/}
+      {/*          indentString(value, format, 0)*/}
+      {/*            .then(formatted => setValue(formatted))*/}
+      {/*            .catch(e => {*/}
+      {/*              console.error(e);*/}
+      {/*              notifications.show({*/}
+      {/*                title: 'Formatting error',*/}
+      {/*                message: `Failed to format ${format}`,*/}
+      {/*                color: 'red',*/}
+      {/*                icon: <IconX size={16}/>*/}
+      {/*              });*/}
+      {/*            });*/}
+      {/*        }}*/}
+      {/*      >*/}
+      {/*        Inline*/}
+      {/*      </Button>*/}
+      {/*    </Grid.Col>*/}
+      {/*  </Grid>*/}
+      {/*</AsideContent>*/}
       <div style={{flex: 1, position: 'relative', height: '100%'}}>
         <div style={{position: 'absolute', top: 10, right: 20, zIndex: 10}}>
           <CopyButton value={value} timeout={2000}>
