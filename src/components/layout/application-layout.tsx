@@ -44,8 +44,7 @@ function ThemeControl() {
 }
 
 export function ApplicationLayout({children}: {
-  children: React.ReactNode,
-  title?: string
+  children: React.ReactNode
 }) {
   const settings = loadSettings();
   const location = useLocation();

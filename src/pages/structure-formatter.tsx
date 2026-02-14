@@ -5,16 +5,15 @@ import {html} from '@codemirror/lang-html';
 import {oneDark} from '@codemirror/theme-one-dark';
 import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "react-router-dom";
-import {ActionIcon, Button, CopyButton, Grid, NumberInput, Tooltip} from "@mantine/core";
-import {notifications} from "@mantine/notifications";
-import {IconCheck, IconCopy, IconX} from "@tabler/icons-react";
-import {indentString} from "@/lib/formatter-utils.ts";
 import {type Format} from "@/lib/utils.ts";
+import {CustomPaper} from "@/components/custom-paper.tsx";
+import {Grid} from "@mantine/core";
 
 export default function StructureFormatter() {
   const [params] = useSearchParams()
   const [format, setFormat] = useState<Format>((params.get('format') as Format) || "Text")
-  const [value, setValue] = useState('')
+  const [inputValue, setInputValue] = useState('')
+  const [outputValue, setOutputValue] = useState('')
   const [formatIndentSize, setFormatIndentSize] = useState<string | number>(2)
 
   useEffect(() => {
@@ -40,7 +39,7 @@ export default function StructureFormatter() {
       {/*<AsideContent>*/}
       {/*  <Grid>*/}
       {/*    <Grid.Col span={6}>*/}
-      {/*      <NumberInput label={"Indent Size"} value={formatIndentSize} min={1}*/}
+      {/*      <NumberInput label={"Indent Size"} inputValue={formatIndentSize} min={1}*/}
       {/*                   max={8}*/}
       {/*                   onChange={setFormatIndentSize}/>*/}
       {/*    </Grid.Col>*/}
@@ -51,7 +50,7 @@ export default function StructureFormatter() {
       {/*      <Button*/}
       {/*        fullWidth*/}
       {/*        onClick={() => {*/}
-      {/*          indentString(value, format, parseInt(formatIndentSize as string))*/}
+      {/*          indentString(inputValue, format, parseInt(formatIndentSize as string))*/}
       {/*            .then(formatted => setValue(formatted))*/}
       {/*            .catch(e => {*/}
       {/*              console.error(e);*/}
@@ -71,7 +70,7 @@ export default function StructureFormatter() {
       {/*      <Button*/}
       {/*        fullWidth*/}
       {/*        onClick={() => {*/}
-      {/*          indentString(value, format, 0)*/}
+      {/*          indentString(inputValue, format, 0)*/}
       {/*            .then(formatted => setValue(formatted))*/}
       {/*            .catch(e => {*/}
       {/*              console.error(e);*/}
@@ -90,26 +89,34 @@ export default function StructureFormatter() {
       {/*  </Grid>*/}
       {/*</AsideContent>*/}
       <div style={{flex: 1, position: 'relative', height: '100%'}}>
-        <div style={{position: 'absolute', top: 10, right: 20, zIndex: 10}}>
-          <CopyButton value={value} timeout={2000}>
-            {({copied, copy}) => (
-              <Tooltip label={copied ? 'Copied' : 'Copy'} withArrow position="right">
-                <ActionIcon color={copied ? 'teal' : 'gray'} variant="light" onClick={copy}>
-                  {copied ? <IconCheck size={16}/> : <IconCopy size={16}/>}
-                </ActionIcon>
-              </Tooltip>
-            )}
-          </CopyButton>
-        </div>
-        <CodeMirror
-          value={value}
-          height="100%"
-          minHeight="100%"
-          theme={oneDark}
-          extensions={extensions}
-          onChange={(newValue) => setValue(newValue)}
-          style={{height: '100%'}}
-        />
+      <Grid style={{height: '100%'}}>
+        <Grid.Col span={6} style={{display: 'flex', flexDirection: 'column'}}>
+        <CustomPaper title="Input" value={inputValue} fullHeight>
+          <CodeMirror
+            value={inputValue}
+            height="100%"
+            minHeight="100%"
+            theme={oneDark}
+            extensions={extensions}
+            onChange={(newValue) => setInputValue(newValue)}
+            style={{flex: 1}}
+          />
+        </CustomPaper>
+        </Grid.Col>
+        <Grid.Col span={6} style={{display: 'flex', flexDirection: 'column'}}>
+          <CustomPaper title="Output" value={outputValue} fullHeight>
+            <CodeMirror
+              value={outputValue}
+              height="100%"
+              minHeight="100%"
+              theme={oneDark}
+              extensions={extensions}
+              onChange={(newValue) => setOutputValue(newValue)}
+              style={{flex: 1}}
+            />
+          </CustomPaper>
+        </Grid.Col>
+      </Grid>
       </div>
     </div>
   );
