@@ -84,29 +84,31 @@ export default function StructureFormatter() {
           ]} onChange={(e) => setFormatIndentSize(e.currentTarget.value)}/>
         </Grid.Col>
       </Grid>
-        <Grid style={{
-          flex: 1,
-          position: 'relative',
-          height: '100%'
-        }}>
-          <Grid.Col span={6}>
-            <CodeMirrorCard extensions={extensions} onValueChange={setInputValue} title="Input" value={inputValue} style={{
-              flex: 1,
-              position: 'relative',
-              height: 'calc(100vh - 60px - var(--mantine-spacing-md) * 2)'
-            }}/>
-          </Grid.Col>
-          <Grid.Col span={6}
-                    style={{
-                      height: '100%'
-                    }}>
-            <CodeMirrorCard extensions={extensions} onValueChange={setOutputValue} title="Output" value={outputValue} style={{
-              flex: 1,
-              position: 'relative',
-              height: 'calc(100vh - 60px - var(--mantine-spacing-md) * 2)'
-            }}/>
-          </Grid.Col>
-        </Grid>
-      </div>
+      <Grid style={{
+        flex: 1,
+        position: 'relative',
+        height: '100%'
+      }}>
+        <Grid.Col span={6}>
+          <CodeMirrorCard extensions={extensions} onValueChange={setInputValue}
+                          title="Input" value={inputValue} style={{
+            flex: 1,
+            position: 'relative',
+            height: 'calc(100vh - 60px - var(--mantine-spacing-md) * 2)'
+          }}/>
+        </Grid.Col>
+        <Grid.Col span={6}
+                  style={{
+                    height: '100%'
+                  }}>
+          <CodeMirrorCard extensions={extensions} onValueChange={setOutputValue}
+                          title="Output" value={outputValue} style={{
+            flex: 1,
+            position: 'relative',
+            height: 'calc(100vh - 60px - var(--mantine-spacing-md) * 2)'
+          }}/>
+        </Grid.Col>
+      </Grid>
+    </div>
   );
 }
