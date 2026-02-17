@@ -1,3 +1,4 @@
+import './structure-formatter.css';
 import {json} from '@codemirror/lang-json';
 import {xml} from '@codemirror/lang-xml';
 import {html} from '@codemirror/lang-html';
@@ -6,7 +7,7 @@ import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {type Format} from "@/lib/utils.ts";
 import {CodeMirrorCard} from "@/components/code-mirror-card.tsx";
-import {Button, Grid, NativeSelect} from "@mantine/core";
+import {Button, Divider, Grid, NativeSelect} from "@mantine/core";
 import {indentString} from "@/lib/formatter-utils.ts";
 import {notifications} from "@mantine/notifications";
 import {IconX} from "@tabler/icons-react";
@@ -65,13 +66,14 @@ export default function StructureFormatter() {
   }
 
   return (
-    <div style={{flex: 1, position: 'relative', height: '100%'}}>
-      <Grid mb={"md"} flex={1} style={{height: '100%', position: 'relative'}}>
+    <div className={"dt-flex-full-height"}>
+      <Divider/>
+      <Grid m={"md"} className={"dt-flex-full-height"}>
         <Grid.Col span={6}>
           {format} Formatter
         </Grid.Col>
         <Grid.Col
-          style={{justifyContent: 'flex-end', display: 'flex', width: '100%'}}
+          className={"sf-controls-container"}
           span={6}>
           <Button variant={"filled"} me={"sm"}
                   onClick={minifyString}>Minify</Button>
@@ -84,29 +86,18 @@ export default function StructureFormatter() {
           ]} onChange={(e) => setFormatIndentSize(e.currentTarget.value)}/>
         </Grid.Col>
       </Grid>
-      <Grid style={{
-        flex: 1,
-        position: 'relative',
-        height: '100%'
-      }}>
+      <Divider/>
+      <Grid m={"md"} className={"dt-flex-full-height"}>
         <Grid.Col span={6}>
           <CodeMirrorCard extensions={extensions} onValueChange={setInputValue}
-                          title="Input" value={inputValue} style={{
-            flex: 1,
-            position: 'relative',
-            height: 'calc(100vh - 60px - var(--mantine-spacing-md) * 2)'
-          }}/>
+                          title="Input" value={inputValue} className={"sf-card"}/>
         </Grid.Col>
         <Grid.Col span={6}
                   style={{
                     height: '100%'
                   }}>
           <CodeMirrorCard extensions={extensions} onValueChange={setOutputValue}
-                          title="Output" value={outputValue} style={{
-            flex: 1,
-            position: 'relative',
-            height: 'calc(100vh - 60px - var(--mantine-spacing-md) * 2)'
-          }}/>
+                          title="Output" value={outputValue} className={"sf-card"}/>
         </Grid.Col>
       </Grid>
     </div>
