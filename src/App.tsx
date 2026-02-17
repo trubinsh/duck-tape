@@ -19,6 +19,10 @@ import {PasswordGenerator} from "@/pages/password-generator.tsx";
 import {UUIDGenerator} from "@/pages/uuid-generator.tsx";
 import {TimestampConverter} from "@/pages/timestamp-converter.tsx";
 import {RegexPage} from "@/pages/regex.tsx";
+import {
+  CodeHighlightAdapterProvider,
+  createShikiAdapter
+} from "@mantine/code-highlight";
 
 const theme = createTheme({
   fontFamily: 'JetBrains Mono',
@@ -39,6 +43,18 @@ const theme = createTheme({
   },
 });
 
+async function loadShiki() {
+  const {createHighlighter} = await import('shiki');
+  const shiki = await createHighlighter({
+    langs: ['json'],
+    themes: [],
+  });
+
+  return shiki;
+}
+
+const shikiAdapter = createShikiAdapter(loadShiki);
+
 export default function App() {
   const settings = loadSettings();
 
@@ -47,26 +63,28 @@ export default function App() {
       <ColorSchemeScript defaultColorScheme={settings.theme}/>
       <MantineProvider theme={theme} defaultColorScheme={settings.theme}>
         <Notifications/>
-        <BrowserRouter>
-          <ClipboardProvider>
-            <ApplicationLayout>
-              <Routes>
-                <Route path="/" element={
-                  <Text size="xl" fw={700} mb="md">Main Content</Text>
-                }/>
-                <Route path="/formatter" element={<StructureFormatter/>}/>
-                <Route path="/encoder" element={<Encoder/>}/>
-                <Route path="/diff-viewer" element={<DiffViewer/>}/>
-                <Route path="/password-generator"
-                       element={<PasswordGenerator/>}/>
-                <Route path="/uuid-generator" element={<UUIDGenerator/>}/>
-                <Route path="/timestamp-converter"
-                       element={<TimestampConverter/>}/>
-                <Route path="/regex" element={<RegexPage/>}/>
-              </Routes>
-            </ApplicationLayout>
-          </ClipboardProvider>
-        </BrowserRouter>
+        <CodeHighlightAdapterProvider adapter={shikiAdapter}>
+          <BrowserRouter>
+            <ClipboardProvider>
+              <ApplicationLayout>
+                <Routes>
+                  <Route path="/" element={
+                    <Text size="xl" fw={700} mb="md">Main Content</Text>
+                  }/>
+                  <Route path="/formatter" element={<StructureFormatter/>}/>
+                  <Route path="/encoder" element={<Encoder/>}/>
+                  <Route path="/diff-viewer" element={<DiffViewer/>}/>
+                  <Route path="/password-generator"
+                         element={<PasswordGenerator/>}/>
+                  <Route path="/uuid-generator" element={<UUIDGenerator/>}/>
+                  <Route path="/timestamp-converter"
+                         element={<TimestampConverter/>}/>
+                  <Route path="/regex" element={<RegexPage/>}/>
+                </Routes>
+              </ApplicationLayout>
+            </ClipboardProvider>
+          </BrowserRouter>
+        </CodeHighlightAdapterProvider>
       </MantineProvider>
     </>
   );
