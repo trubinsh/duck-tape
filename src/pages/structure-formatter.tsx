@@ -1,4 +1,3 @@
-import CodeMirror from '@uiw/react-codemirror';
 import {json} from '@codemirror/lang-json';
 import {xml} from '@codemirror/lang-xml';
 import {html} from '@codemirror/lang-html';
@@ -6,7 +5,7 @@ import {oneDark} from '@codemirror/theme-one-dark';
 import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {type Format} from "@/lib/utils.ts";
-import {CustomPaper} from "@/components/custom-paper.tsx";
+import {CodeMirrorCard} from "@/components/code-mirror-card.tsx";
 import {Button, Grid, NativeSelect} from "@mantine/core";
 import {indentString} from "@/lib/formatter-utils.ts";
 import {notifications} from "@mantine/notifications";
@@ -14,7 +13,7 @@ import {IconX} from "@tabler/icons-react";
 
 export default function StructureFormatter() {
   const [params] = useSearchParams()
-  const [format, setFormat] = useState<Format>((params.get('format') as Format) || "Text")
+  const [format, setFormat] = useState<Format>((params.get('format') as Format) || "JSON")
   const [inputValue, setInputValue] = useState('')
   const [outputValue, setOutputValue] = useState('')
   const [formatIndentSize, setFormatIndentSize] = useState<string | number>(2)
@@ -66,59 +65,48 @@ export default function StructureFormatter() {
   }
 
   return (
-    <div style={{height: 'calc(100vh - 60px - 32px)', width: '100%'}}>
-      <div style={{flex: 1, position: 'relative', height: '100%'}}>
-        <Grid mb={"md"}>
+    <div style={{flex: 1, position: 'relative', height: '100%'}}>
+      <Grid mb={"md"} flex={1} style={{height: '100%', position: 'relative'}}>
+        <Grid.Col span={6}>
+          {format} Formatter
+        </Grid.Col>
+        <Grid.Col
+          style={{justifyContent: 'flex-end', display: 'flex', width: '100%'}}
+          span={6}>
+          <Button variant={"filled"} me={"sm"}
+                  onClick={minifyString}>Minify</Button>
+          <Button variant={"filled"} me={"sm"}
+                  onClick={formatString}>Format</Button>
+          <NativeSelect value={formatIndentSize} data={[
+            {label: 'Indentation (1 spaces)', value: '1'},
+            {label: 'Indentation (2 spaces)', value: '2'},
+            {label: 'Indentation (4 spaces)', value: '4'},
+          ]} onChange={(e) => setFormatIndentSize(e.currentTarget.value)}/>
+        </Grid.Col>
+      </Grid>
+        <Grid style={{
+          flex: 1,
+          position: 'relative',
+          height: '100%'
+        }}>
           <Grid.Col span={6}>
-            {format} Formatter
+            <CodeMirrorCard extensions={extensions} onValueChange={setInputValue} title="Input" value={inputValue} style={{
+              flex: 1,
+              position: 'relative',
+              height: 'calc(100vh - 60px - var(--mantine-spacing-md) * 2)'
+            }}/>
           </Grid.Col>
-          <Grid.Col
-            style={{justifyContent: 'flex-end', display: 'flex', width: '100%'}}
-            span={6}>
-            <Button variant={"filled"} me={"sm"}
-                    onClick={formatString}>Format</Button>
-            <Button variant={"filled"} me={"sm"}
-                    onClick={minifyString}>Minify</Button>
-            <NativeSelect value={formatIndentSize} data={[
-              {label: 'Indentation (1 spaces)', value: '1'},
-              {label: 'Indentation (2 spaces)', value: '2'},
-              {label: 'Indentation (4 spaces)', value: '4'},
-            ]} onChange={(e) => setFormatIndentSize(e.currentTarget.value)}/>
+          <Grid.Col span={6}
+                    style={{
+                      height: '100%'
+                    }}>
+            <CodeMirrorCard extensions={extensions} onValueChange={setOutputValue} title="Output" value={outputValue} style={{
+              flex: 1,
+              position: 'relative',
+              height: 'calc(100vh - 60px - var(--mantine-spacing-md) * 2)'
+            }}/>
           </Grid.Col>
         </Grid>
-        <div style={{flex: 1, position: 'relative', height: '100%'}}>
-          <Grid>
-            <Grid.Col span={6}
-                      style={{display: 'flex', flexDirection: 'column'}}>
-              <CustomPaper title="Input" value={inputValue} fullHeight>
-                <CodeMirror
-                  value={inputValue}
-                  height="100%"
-                  minHeight="100%"
-                  theme={oneDark}
-                  extensions={extensions}
-                  onChange={(newValue) => setInputValue(newValue)}
-                  style={{height: '100%'}}
-                />
-              </CustomPaper>
-            </Grid.Col>
-            <Grid.Col span={6}
-                      style={{display: 'flex', flexDirection: 'column'}}>
-              <CustomPaper title="Output" value={outputValue} fullHeight>
-                <CodeMirror
-                  value={outputValue}
-                  height="100%"
-                  minHeight="100%"
-                  theme={oneDark}
-                  extensions={extensions}
-                  onChange={(newValue) => setOutputValue(newValue)}
-                  style={{height: '100%'}}
-                />
-              </CustomPaper>
-            </Grid.Col>
-          </Grid>
-        </div>
       </div>
-    </div>
   );
 }

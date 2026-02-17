@@ -1,17 +1,29 @@
-import {ActionIcon, Card, CopyButton, Group, Text, Tooltip} from "@mantine/core";
+import './code-mirror-card.css'
+import {
+  ActionIcon,
+  Card,
+  type CardProps,
+  CopyButton,
+  Group,
+  Text,
+  Tooltip
+} from "@mantine/core";
 import {IconCheck, IconCopy} from "@tabler/icons-react";
+import CodeMirror, {type Extension} from "@uiw/react-codemirror";
+import {oneDark} from "@codemirror/theme-one-dark";
 
 interface CustomPaperProps {
-  children: React.ReactNode;
   title: string;
   value: string;
-  fullHeight?: boolean;
+  extensions: Extension[];
+  onValueChange: (newValue: string) => void;
 }
 
-function CustomPaper({children, title, value, fullHeight}: CustomPaperProps) {
+
+  function CodeMirrorCard({title, value, style, onValueChange, extensions}: CustomPaperProps & CardProps) {
   return (
-    <Card withBorder style={{height: fullHeight ? '100%' : 'auto', display: 'flex', flexDirection: 'column'}}>
-      <Card.Section withBorder inheritPadding py="xs">
+    <Card withBorder style={style}>
+      <Card.Section className={"cmc-header"}>
         <Group justify="space-between">
           <Text fw={500}>{title}</Text>
           <CopyButton value={value} timeout={2000}>
@@ -27,11 +39,17 @@ function CustomPaper({children, title, value, fullHeight}: CustomPaperProps) {
           </CopyButton>
         </Group>
       </Card.Section>
-      <Card.Section style={{flex: 1, height: fullHeight ? '100%' : 'auto', display: fullHeight ? 'flex' : 'block', flexDirection: 'column'}}>
-        {children}
+      <Card.Section className={"cmc-body"}>
+        <CodeMirror
+          value={value}
+          theme={oneDark}
+          extensions={extensions}
+          onChange={onValueChange}
+          style={{height: '100%'}}
+        />
       </Card.Section>
     </Card>
   );
 }
 
-export {CustomPaper};
+export {CodeMirrorCard};
