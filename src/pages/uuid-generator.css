@@ -1,15 +1,20 @@
-.uuid-output-field {
+.ug-output-field {
     position: relative;
     flex: 1;
     margin-top: 1rem;
 }
 
-.uuid-generator-container {
+.ug-container {
     position: relative;
     flex: 1;
     margin-top: 1rem;
 }
 
-.generated-uuids-fields {
-    margin-top: 3rem;
+.ug-output-box {
+    margin: var(--mantine-spacing-md);
+    width: 25vw;
+}
+
+.ug-fields-container {
+    margin-top: var(--mantine-spacing-md);
 }

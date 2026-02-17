@@ -1,16 +1,13 @@
 import './code-mirror-card.css'
 import {
-  ActionIcon,
   Card,
   type CardProps,
-  CopyButton,
   Group,
   Text,
-  Tooltip
 } from "@mantine/core";
-import {IconCheck, IconCopy} from "@tabler/icons-react";
 import CodeMirror, {type Extension} from "@uiw/react-codemirror";
 import {oneDark} from "@codemirror/theme-one-dark";
+import {CustomCopyButton} from "@/components/custom-copy-button.tsx";
 
 interface CustomPaperProps {
   title: string;
@@ -26,17 +23,7 @@ interface CustomPaperProps {
       <Card.Section className={"cmc-header"}>
         <Group justify="space-between">
           <Text fw={500}>{title}</Text>
-          <CopyButton value={value} timeout={2000}>
-            {({copied, copy}) => (
-              <Tooltip label={copied ? 'Copied' : 'Copy'} withArrow
-                       position="right">
-                <ActionIcon color={copied ? 'teal' : 'gray'} variant="light"
-                            onClick={copy}>
-                  {copied ? <IconCheck size={16}/> : <IconCopy size={16}/>}
-                </ActionIcon>
-              </Tooltip>
-            )}
-          </CopyButton>
+          <CustomCopyButton value={value}/>
         </Group>
       </Card.Section>
       <Card.Section className={"cmc-body"}>

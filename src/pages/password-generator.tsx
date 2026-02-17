@@ -3,7 +3,8 @@ import {useState} from "react";
 import {
   Box,
   Button,
-  Container, Divider,
+  Container,
+  Divider,
   Grid,
   MultiSelect,
   NumberInput,
@@ -90,7 +91,9 @@ function PasswordGenerator() {
       <Divider/>
       <Container>
         <Box className={"dt-flex-full-height pwg-output-box"}>
-          <Textarea rightSection={<CustomCopyButton value={password}/>} value={password} readOnly/>
+          <Textarea rightSectionPointerEvents={"all"}
+            rightSection={<CustomCopyButton value={password}/>}
+                    value={password} readOnly/>
         </Box>
       </Container>
     </div>
