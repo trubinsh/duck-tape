@@ -20,9 +20,9 @@ interface CustomPaperProps {
 }
 
 
-  function CodeMirrorCard({title, value, style, onValueChange, extensions}: CustomPaperProps & CardProps) {
+  function CodeMirrorCard({title, value, style, className, onValueChange, extensions}: CustomPaperProps & CardProps) {
   return (
-    <Card withBorder style={style}>
+    <Card withBorder style={style} className={className}>
       <Card.Section className={"cmc-header"}>
         <Group justify="space-between">
           <Text fw={500}>{title}</Text>
