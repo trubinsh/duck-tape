@@ -1,0 +1,24 @@
+.e-card {
+    flex: 1;
+    position: relative;
+    height: calc(100vh - 60px - (16px * 3) - var(--mantine-spacing-md) * 2);
+}
+
+.e-card-header {
+    padding: var(--mantine-spacing-xs);
+    border-bottom: 1px solid var(--mantine-color-gray-filled);
+}
+
+.e-grid {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--mantine-spacing-md);
+}
+
+.e-grid-col {
+    display: flex;
+    flex-direction: column;
+    height: 100%
+}

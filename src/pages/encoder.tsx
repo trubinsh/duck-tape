@@ -1,14 +1,7 @@
+import './encoder.css';
 import {useState} from "react";
-import {
-  ActionIcon,
-  CopyButton,
-  Grid,
-  Stack,
-  Textarea,
-  Title,
-  Tooltip
-} from "@mantine/core";
-import {IconCheck, IconCopy, IconX} from "@tabler/icons-react";
+import {Card, Grid, Group, Stack, Text, Textarea, Title} from "@mantine/core";
+import {IconX} from "@tabler/icons-react";
 import {notifications} from "@mantine/notifications";
 import {
   decodeBase64,
@@ -90,91 +83,42 @@ function SimpleEncoder({format}: { format: Format }) {
   }
 
   return (
-    <div style={{
-      flex: 1,
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
-      <Grid style={{flex: 1, margin: 0}}>
-        <Grid.Col span={6} style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%'
-        }}>
-          <Title order={6}>Plain text</Title>
-          <div style={{
-            flex: 1,
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column'
-          }}>
-            <div style={{position: 'absolute', top: 20, right: 10, zIndex: 10}}>
-              <CopyButton value={decodedValue} timeout={2000}>
-                {({copied, copy}) => (
-                  <Tooltip label={copied ? 'Copied' : 'Copy'} withArrow
-                           position="right">
-                    <ActionIcon color={copied ? 'teal' : 'gray'} variant="light"
-                                onClick={copy}>
-                      {copied ? <IconCheck size={16}/> : <IconCopy size={16}/>}
-                    </ActionIcon>
-                  </Tooltip>
-                )}
-              </CopyButton>
-            </div>
+    <Grid className={"e-grid"}>
+      <Grid.Col span={6} className={"e-grid-col"}>
+        <Card withBorder className={"e-card"}>
+          <Card.Section className={"e-card-header"}>
+            <Group justify="space-between">
+              <Text fw={500}>Plain Text</Text>
+              <CustomCopyButton value={decodedValue}/>
+            </Group>
+          </Card.Section>
+          <Card.Section>
             <Textarea
-              placeholder="Plain text"
+              placeholder={`Plain text`}
               value={decodedValue}
-              pt={"sm"}
               onChange={(newValue) => encodeValue(newValue.currentTarget.value)}
-              styles={{
-                root: {flex: 1, display: 'flex', flexDirection: 'column'},
-                wrapper: {flex: 1},
-                input: {flex: 1}
-              }}
             />
-          </div>
-        </Grid.Col>
-        <Grid.Col span={6} style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%'
-        }}>
-          <Title order={6}>Encoded</Title>
-          <div style={{
-            flex: 1,
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column'
-          }}>
-            <div style={{position: 'absolute', top: 20, right: 10, zIndex: 10}}>
-              <CopyButton value={encodedValue} timeout={2000}>
-                {({copied, copy}) => (
-                  <Tooltip label={copied ? 'Copied' : 'Copy'} withArrow
-                           position="right">
-                    <ActionIcon color={copied ? 'teal' : 'gray'} variant="light"
-                                onClick={copy}>
-                      {copied ? <IconCheck size={16}/> : <IconCopy size={16}/>}
-                    </ActionIcon>
-                  </Tooltip>
-                )}
-              </CopyButton>
-            </div>
+          </Card.Section>
+        </Card>
+      </Grid.Col>
+      <Grid.Col span={6} className={"e-grid-col"}>
+        <Card withBorder className={"e-card"}>
+          <Card.Section className={"e-card-header"}>
+            <Group justify="space-between">
+              <Text fw={500}>Encoded</Text>
+              <CustomCopyButton value={encodedValue}/>
+            </Group>
+          </Card.Section>
+          <Card.Section>
             <Textarea
               placeholder={`${format} encoded string`}
               value={encodedValue}
-              pt={"sm"}
               onChange={(newValue) => decodeValue(newValue.currentTarget.value)}
-              styles={{
-                root: {flex: 1, display: 'flex', flexDirection: 'column'},
-                wrapper: {flex: 1},
-                input: {flex: 1}
-              }}
             />
-          </div>
-        </Grid.Col>
-      </Grid>
-    </div>
+          </Card.Section>
+        </Card>
+      </Grid.Col>
+    </Grid>
   )
 }
 
