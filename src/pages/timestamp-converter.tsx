@@ -3,6 +3,7 @@ import './timestamp-converter.css';
 import {Card, Grid, NumberInput, Text, Title} from "@mantine/core";
 import {useEffect, useState} from "react";
 import {DateTimePicker} from "@mantine/dates";
+import {TitleContent} from "@/components/title-context.tsx";
 
 const FromEpochConverter = () => {
   const [timestamp, setTimestamp] = useState<number>(parseInt((new Date().getTime() / 1000).toFixed()));
@@ -82,14 +83,17 @@ const ToEpochConverter = () => {
 function TimestampConverter() {
 
   return (
-    <Grid ms={"sm"} mt={"sm"}>
-      <Grid.Col span={6}>
-        <FromEpochConverter/>
-      </Grid.Col>
-      <Grid.Col span={6}>
-        <ToEpochConverter/>
-      </Grid.Col>
-    </Grid>
+    <div className={"dt-flex-full-height"}>
+      <TitleContent title={"Timestamp Converter"}/>
+      <Grid mt={"sm"} style={{ flex: 1 }}>
+        <Grid.Col span={6}>
+          <FromEpochConverter/>
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <ToEpochConverter/>
+        </Grid.Col>
+      </Grid>
+    </div>
   )
 }
 

@@ -1,7 +1,7 @@
 .dv-container {
     flex: 1;
     position: relative;
-    height: calc(100vh - 60px - 32px);
+    height: calc(98vh - 60px - 32px);
 }
 
 .cm-mergeViewEditors {

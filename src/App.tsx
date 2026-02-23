@@ -23,6 +23,7 @@ import {
   CodeHighlightAdapterProvider,
   createShikiAdapter
 } from "@mantine/code-highlight";
+import {TitleProvider} from "@/components/title-context.tsx";
 
 const theme = createTheme({
   fontFamily: 'JetBrains Mono',
@@ -45,12 +46,10 @@ const theme = createTheme({
 
 async function loadShiki() {
   const {createHighlighter} = await import('shiki');
-  const shiki = await createHighlighter({
+  return await createHighlighter({
     langs: ['json'],
     themes: [],
   });
-
-  return shiki;
 }
 
 const shikiAdapter = createShikiAdapter(loadShiki);
@@ -66,22 +65,24 @@ export default function App() {
         <CodeHighlightAdapterProvider adapter={shikiAdapter}>
           <BrowserRouter>
             <ClipboardProvider>
-              <ApplicationLayout>
-                <Routes>
-                  <Route path="/" element={
-                    <Text size="xl" fw={700} mb="md">Main Content</Text>
-                  }/>
-                  <Route path="/formatter" element={<StructureFormatter/>}/>
-                  <Route path="/encoder" element={<Encoder/>}/>
-                  <Route path="/diff-viewer" element={<DiffViewer/>}/>
-                  <Route path="/password-generator"
-                         element={<PasswordGenerator/>}/>
-                  <Route path="/uuid-generator" element={<UUIDGenerator/>}/>
-                  <Route path="/timestamp-converter"
-                         element={<TimestampConverter/>}/>
-                  <Route path="/regex" element={<RegexPage/>}/>
-                </Routes>
-              </ApplicationLayout>
+              <TitleProvider>
+                <ApplicationLayout>
+                  <Routes>
+                    <Route path="/" element={
+                      <Text size="xl" fw={700} mb="md">Main Content</Text>
+                    }/>
+                    <Route path="/formatter" element={<StructureFormatter/>}/>
+                    <Route path="/encoder" element={<Encoder/>}/>
+                    <Route path="/diff-viewer" element={<DiffViewer/>}/>
+                    <Route path="/password-generator"
+                           element={<PasswordGenerator/>}/>
+                    <Route path="/uuid-generator" element={<UUIDGenerator/>}/>
+                    <Route path="/timestamp-converter"
+                           element={<TimestampConverter/>}/>
+                    <Route path="/regex" element={<RegexPage/>}/>
+                  </Routes>
+                </ApplicationLayout>
+              </TitleProvider>
             </ClipboardProvider>
           </BrowserRouter>
         </CodeHighlightAdapterProvider>

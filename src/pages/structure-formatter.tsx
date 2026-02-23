@@ -7,10 +7,11 @@ import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {type Format} from "@/lib/utils.ts";
 import {CodeMirrorCard} from "@/components/code-mirror-card.tsx";
-import {Button, Divider, Grid, NativeSelect} from "@mantine/core";
+import {Button, Grid, NativeSelect} from "@mantine/core";
 import {indentString} from "@/lib/formatter-utils.ts";
 import {notifications} from "@mantine/notifications";
 import {IconX} from "@tabler/icons-react";
+import {TitleContent} from "@/components/title-context.tsx";
 
 export default function StructureFormatter() {
   const [params] = useSearchParams()
@@ -67,37 +68,30 @@ export default function StructureFormatter() {
 
   return (
     <div className={"dt-flex-full-height"}>
-      <Divider/>
-      <Grid m={"md"} className={"dt-flex-full-height"}>
-        <Grid.Col span={6}>
-          {format} Formatter
-        </Grid.Col>
-        <Grid.Col
-          className={"sf-controls-container"}
-          span={6}>
-          <Button variant={"filled"} me={"sm"}
-                  onClick={minifyString}>Minify</Button>
-          <Button variant={"filled"} me={"sm"}
-                  onClick={formatString}>Format</Button>
-          <NativeSelect value={formatIndentSize} data={[
-            {label: 'Indentation (1 spaces)', value: '1'},
-            {label: 'Indentation (2 spaces)', value: '2'},
-            {label: 'Indentation (4 spaces)', value: '4'},
-          ]} onChange={(e) => setFormatIndentSize(e.currentTarget.value)}/>
-        </Grid.Col>
-      </Grid>
-      <Divider/>
-      <Grid m={"md"} className={"dt-flex-full-height"}>
+      <TitleContent title={`${format} Formatter`}>
+        <Button variant={"filled"} me={"sm"}
+                onClick={minifyString}>Minify</Button>
+        <Button variant={"filled"} me={"sm"}
+                onClick={formatString}>Format</Button>
+        <NativeSelect value={formatIndentSize} data={[
+          {label: 'Indentation (1 spaces)', value: '1'},
+          {label: 'Indentation (2 spaces)', value: '2'},
+          {label: 'Indentation (4 spaces)', value: '4'},
+        ]} onChange={(e) => setFormatIndentSize(e.currentTarget.value)}/>
+      </TitleContent>
+      <Grid className={"dt-flex-full-height"} style={{ flex: 1 }}>
         <Grid.Col span={6}>
           <CodeMirrorCard extensions={extensions} onValueChange={setInputValue}
-                          title="Input" value={inputValue} className={"sf-card"}/>
+                          title="Input" value={inputValue}
+                          className={"sf-card"}/>
         </Grid.Col>
         <Grid.Col span={6}
                   style={{
                     height: '100%'
                   }}>
           <CodeMirrorCard extensions={extensions} onValueChange={setOutputValue}
-                          title="Output" value={outputValue} className={"sf-card"}/>
+                          title="Output" value={outputValue}
+                          className={"sf-card"}/>
         </Grid.Col>
       </Grid>
     </div>

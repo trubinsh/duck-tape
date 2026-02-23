@@ -3,9 +3,6 @@ import {useState} from "react";
 import {
   Box,
   Button,
-  Container,
-  Divider,
-  Grid,
   MultiSelect,
   NumberInput,
   Textarea,
@@ -15,6 +12,7 @@ import {IconX} from "@tabler/icons-react";
 import {notifications} from "@mantine/notifications";
 import {postMessage} from "@/lib/worker-utils.ts";
 import {CustomCopyButton} from "@/components/custom-copy-button.tsx";
+import {TitleContent} from "@/components/title-context.tsx";
 
 const LOWER = 'abcdefghijklmnopqrstuvwxyz';
 const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -42,61 +40,43 @@ function PasswordGenerator() {
   }
 
   return (
-    <div>
-      <Divider/>
-      <Grid m={"md"} className={"dt-flex-full-height"}>
-        <Grid.Col span={4}>
-          Password Generator
-        </Grid.Col>
-        <Grid.Col
-          span={8}>
-          <Grid className={"pwg-justify-content-right"}>
-            <Grid.Col span={4} className={"pwg-justify-content-right"}>
-              <Button variant={"filled"} me={"sm"}
-                      onClick={onGeneratePassword}>Generate</Button>
-            </Grid.Col>
-            <Grid.Col span={2} className={"pwg-justify-content-right"}>
-              <Tooltip label={"Password length"}>
-                <NumberInput placeholder={"Length"} value={length} min={6}
-                             max={128}
-                             onChange={(v) => setLength(v as number)}/>
-              </Tooltip>
-            </Grid.Col>
-            <Grid.Col span={6} className={"pwg-justify-content-right"}>
-              <MultiSelect
-                value={characters}
-                onChange={setCharacters}
-                style={{width: '25vw'}}
-                data={[{
-                  label: 'Lowercase letters',
-                  value: LOWER,
-                },
-                  {
-                    label: 'Uppercase letters',
-                    value: UPPER,
-                  },
-                  {
-                    label: 'Numbers',
-                    value: NUMBERS,
-                  },
-                  {
-                    label: 'Special characters',
-                    value: SPECIAL,
-                  }]}
-              />
-            </Grid.Col>
-          </Grid>
-        </Grid.Col>
-      </Grid>
-      <Divider/>
-      <Container>
-        <Box className={"dt-flex-full-height pwg-output-box"}>
-          <Textarea rightSectionPointerEvents={"all"}
-            rightSection={<CustomCopyButton value={password}/>}
-                    value={password} readOnly/>
-        </Box>
-      </Container>
-    </div>
+    <>
+      <TitleContent title={"Password Generator"}>
+        <Button variant={"filled"} me={"sm"}
+                onClick={onGeneratePassword}>Generate</Button>
+        <Tooltip label={"Password length"}>
+          <NumberInput placeholder={"Length"} value={length} min={6}
+                       max={128}
+                       onChange={(v) => setLength(v as number)}/>
+        </Tooltip>
+        <MultiSelect
+          value={characters}
+          onChange={setCharacters}
+          style={{width: '25vw'}}
+          data={[{
+            label: 'Lowercase letters',
+            value: LOWER,
+          },
+            {
+              label: 'Uppercase letters',
+              value: UPPER,
+            },
+            {
+              label: 'Numbers',
+              value: NUMBERS,
+            },
+            {
+              label: 'Special characters',
+              value: SPECIAL,
+            }]}
+        />
+      </TitleContent>
+      <Box className={"dt-flex-full-height pwg-output-box"}>
+        <Textarea rightSectionPointerEvents={"all"}
+                  rightSection={<CustomCopyButton value={password}/>}
+                  value={password} readOnly/>
+      </Box>
+    </>
   )
 }
 

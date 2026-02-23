@@ -4,7 +4,7 @@ import {basicSetup} from "codemirror";
 import {useEffect, useRef} from "react";
 import {json} from "@codemirror/lang-json";
 import {oneDark} from "@codemirror/theme-one-dark";
-import {Divider, Title} from "@mantine/core";
+import {TitleContent} from "@/components/title-context.tsx";
 
 export default function DiffViewer() {
   const mergeViewRef = useRef<HTMLDivElement>(null)
@@ -34,12 +34,11 @@ export default function DiffViewer() {
     return () => view.destroy()
   }, [mergeViewRef]);
 
-  return (<>
-      <Divider/>
-      <Title m={"md"} order={6}>Diff Viewer</Title>
-      <Divider mb={"xs"}/>
-        <div ref={mergeViewRef} id="diff-viewer"
-             className={"dv-container"}/>
-    </>
+  return (
+    <div className={"dt-flex-full-height"}>
+      <TitleContent title={"Diff Viewer"}/>
+      <div ref={mergeViewRef} id="diff-viewer"
+           className={"dv-container"}/>
+    </div>
   );
 }
