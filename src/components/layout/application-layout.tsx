@@ -1,16 +1,20 @@
 import {
   ActionIcon,
-  AppShell, Divider,
+  AppShell,
+  Container,
+  Divider,
+  Grid,
   Group,
   NavLink,
   ScrollArea,
   Switch,
+  Title,
   useComputedColorScheme,
   useMantineColorScheme
 } from '@mantine/core';
 import {IconMoon, IconSun} from '@tabler/icons-react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import {isToolGroup, tools, useBrowser} from "@/lib/utils.ts";
+import {isToolGroup, tools, useBrowser, useTitle} from "@/lib/utils.ts";
 import * as React from "react";
 import {type BaseSyntheticEvent, useEffect, useState} from "react";
 import {loadSettings, saveSettings} from "@/lib/settings.ts";
@@ -51,6 +55,7 @@ export function ApplicationLayout({children}: {
   const navigate = useNavigate();
   const [isInitialized, setIsInitialized] = useState(false);
   const browser = useBrowser();
+  const {content: titleContent, title} = useTitle();
   const {
     enableClipboardAware,
     setEnableClipboardAware
@@ -119,16 +124,15 @@ export function ApplicationLayout({children}: {
                   >
                     {
                       tool.tools.map(t => (
-                          <NavLink label={`${t.name}`}
-                                   key={`${t.name}-${t.redirectUrl}`}
-                                   component={Link}
-                                   to={t.redirectUrl}/>
-                        ))
+                        <NavLink label={`${t.name}`}
+                                 key={`${t.name}-${t.redirectUrl}`}
+                                 component={Link}
+                                 to={t.redirectUrl}/>
+                      ))
                     }
                   </NavLink>
                 )
-              }
-              else {
+              } else {
                 return <NavLink
                   key={tool.redirectUrl}
                   to={tool.redirectUrl!}
@@ -143,7 +147,7 @@ export function ApplicationLayout({children}: {
         </AppShell.Section>
         <AppShell.Section>
           <Group gap={"md"}>
-          <ThemeControl/>
+            <ThemeControl/>
             {
               // SmartSearch not supported on Safari yet. Safari has a lockdown on read from clipboard only for user-specific actions, Clipboard API does not allow direct reads
               browser !== "Safari" && <Switch checked={enableClipboardAware}
@@ -155,7 +159,21 @@ export function ApplicationLayout({children}: {
       </AppShell.Navbar>
 
       <AppShell.Main style={{display: 'flex', flexDirection: 'column'}}>
-        {children}
+        <Divider/>
+        <Grid m={"md"}>
+          <Grid.Col span={3}>
+            <Title order={4}>{title}</Title>
+          </Grid.Col>
+          <Grid.Col span={9}>
+            <Group justify={"flex-end"}>
+              {titleContent}
+            </Group>
+          </Grid.Col>
+        </Grid>
+        <Divider/>
+        <Container fluid mt={"xs"} ml={0} mr="auto" style={{ width: '85%', display: 'flex', flexDirection: 'column', flex: 1, padding: 0 }}>
+          {children}
+        </Container>
       </AppShell.Main>
     </AppShell>
   );

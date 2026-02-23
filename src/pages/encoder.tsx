@@ -1,6 +1,6 @@
 import './encoder.css';
 import {useState} from "react";
-import {Card, Grid, Group, Stack, Text, Textarea, Title} from "@mantine/core";
+import {Card, Grid, Group, Stack, Text, Textarea} from "@mantine/core";
 import {IconX} from "@tabler/icons-react";
 import {notifications} from "@mantine/notifications";
 import {
@@ -14,6 +14,7 @@ import {useSearchParams} from "react-router-dom";
 import type {Format} from "@/lib/utils.ts";
 import {CodeHighlight} from "@mantine/code-highlight";
 import {CustomCopyButton} from "@/components/custom-copy-button.tsx";
+import {TitleContent} from "@/components/title-context.tsx";
 
 export function Encoder() {
   const [params] = useSearchParams();
@@ -83,42 +84,46 @@ function SimpleEncoder({format}: { format: Format }) {
   }
 
   return (
-    <Grid className={"e-grid"}>
-      <Grid.Col span={6} className={"e-grid-col"}>
-        <Card withBorder className={"e-card"}>
-          <Card.Section className={"e-card-header"}>
-            <Group justify="space-between">
-              <Text fw={500}>Plain Text</Text>
-              <CustomCopyButton value={decodedValue}/>
-            </Group>
-          </Card.Section>
-          <Card.Section>
-            <Textarea
-              placeholder={`Plain text`}
-              value={decodedValue}
-              onChange={(newValue) => encodeValue(newValue.currentTarget.value)}
-            />
-          </Card.Section>
-        </Card>
-      </Grid.Col>
-      <Grid.Col span={6} className={"e-grid-col"}>
-        <Card withBorder className={"e-card"}>
-          <Card.Section className={"e-card-header"}>
-            <Group justify="space-between">
-              <Text fw={500}>Encoded</Text>
-              <CustomCopyButton value={encodedValue}/>
-            </Group>
-          </Card.Section>
-          <Card.Section>
-            <Textarea
-              placeholder={`${format} encoded string`}
-              value={encodedValue}
-              onChange={(newValue) => decodeValue(newValue.currentTarget.value)}
-            />
-          </Card.Section>
-        </Card>
-      </Grid.Col>
-    </Grid>
+    <div className={"dt-flex-full-height"}>
+      <TitleContent title={`${format} Encoder/Decoder`}>
+      </TitleContent>
+      <Grid className={"e-grid"} style={{ flex: 1 }}>
+        <Grid.Col span={6} className={"e-grid-col"}>
+          <Card withBorder className={"e-card"}>
+            <Card.Section className={"e-card-header"}>
+              <Group justify="space-between">
+                <Text fw={500}>Plain Text</Text>
+                <CustomCopyButton value={decodedValue}/>
+              </Group>
+            </Card.Section>
+            <Card.Section>
+              <Textarea
+                placeholder={`Plain text`}
+                value={decodedValue}
+                onChange={(newValue) => encodeValue(newValue.currentTarget.value)}
+              />
+            </Card.Section>
+          </Card>
+        </Grid.Col>
+        <Grid.Col span={6} className={"e-grid-col"}>
+          <Card withBorder className={"e-card"}>
+            <Card.Section className={"e-card-header"}>
+              <Group justify="space-between">
+                <Text fw={500}>Encoded</Text>
+                <CustomCopyButton value={encodedValue}/>
+              </Group>
+            </Card.Section>
+            <Card.Section>
+              <Textarea
+                placeholder={`${format} encoded string`}
+                value={encodedValue}
+                onChange={(newValue) => decodeValue(newValue.currentTarget.value)}
+              />
+            </Card.Section>
+          </Card>
+        </Grid.Col>
+      </Grid>
+    </div>
   )
 }
 
@@ -155,9 +160,11 @@ function JWTEncoder() {
 
   return (
     <div className={"dt-flex-full-height"}>
-      <Grid m={"md"}>
+      <TitleContent title={"JWT Encoder/Decoder"}>
+      </TitleContent>
+      <Grid style={{ flex: 1 }}>
         <Grid.Col span={6} className={"dt-flex-full-height"}>
-          <Title order={6}>Encoded</Title>
+          <Text fw={500}>Encoded</Text>
           <Textarea
             placeholder={`JWT encoded string`}
             value={encodedValue}
@@ -175,19 +182,19 @@ function JWTEncoder() {
         </Grid.Col>
         <Grid.Col span={6} className={"dt-flex-full-height"}>
           <Stack gap="xs">
-            <Title order={6}>Headers</Title>
+            <Text fw={500}>Headers</Text>
             <CodeHighlight
               code={decodedHeader}
               language="json"
               radius={"md"}
               styles={{code: {height: '25vh', overflow: 'auto'}}}
             />
-            <Title order={6}>Body</Title>
+            <Text fw={500}>Body</Text>
             <CodeHighlight
               code={decodedBody}
               language="json"
               radius={"md"}
-              styles={{code: {height: '60vh', overflow: 'auto'}}}
+              styles={{code: {height: '54vh', overflow: 'auto'}}}
             />
           </Stack>
         </Grid.Col>

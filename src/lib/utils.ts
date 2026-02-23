@@ -1,4 +1,5 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
+import {TitleContext} from "@/components/title-context.tsx";
 
 export type Format =
   'URL'
@@ -171,4 +172,12 @@ export function useOS() {
   }, []);
 
   return os;
+}
+
+export function useTitle() {
+  const context = useContext(TitleContext);
+  if (context === undefined) {
+    throw new Error('useTitle must be used within an TitleProvider');
+  }
+  return context;
 }
