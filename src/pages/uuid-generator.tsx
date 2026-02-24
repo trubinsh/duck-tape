@@ -48,21 +48,23 @@ function UUIDGenerator() {
         <Tooltip label={"Version"}>
           <Select data={uuidVersions}
                   value={version}
+                  data-testid="version-selector"
                   allowDeselect={false}
                   onChange={e => setVersion(e!)}/>
         </Tooltip>
         <Tooltip label={"Count"}>
           <NumberInput value={count} min={1} max={30}
+                       data-testid="count-input"
                        onChange={e => setCount(e as number)}/>
         </Tooltip>
-        <CustomCopyButton tooltip={'Copy all UUIDs'} value={uuids.join('\n')}/>
+        <CustomCopyButton tooltip={'Copy all UUIDs'} ariaLabel="Copy all UUIDs" value={uuids.join('\n')}/>
       </TitleContent>
         <Box className={'dt-flex-full-height ug-output-box'}>
           {
             uuids.map((uuid, i) =>
               <Input className={"ug-output-field"} key={`uuid-field-${i}`}
                      rightSectionPointerEvents={"all"}
-                     rightSection={<CustomCopyButton value={uuid}/>} readOnly
+                     rightSection={<CustomCopyButton value={uuid} ariaLabel="Copy UUID"/>} readOnly
                      value={uuid} placeholder="UUID"/>)
           }
         </Box>
