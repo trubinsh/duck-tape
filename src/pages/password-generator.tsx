@@ -47,6 +47,8 @@ function PasswordGenerator() {
         <Tooltip label={"Password length"}>
           <NumberInput placeholder={"Length"} value={length} min={6}
                        max={128}
+                       aria-label={"Password length"}
+                       data-testid="length-input"
                        onChange={(v) => setLength(v as number)}/>
         </Tooltip>
         <MultiSelect
@@ -73,8 +75,8 @@ function PasswordGenerator() {
       </TitleContent>
       <Box className={"dt-flex-full-height pwg-output-box"}>
         <Textarea rightSectionPointerEvents={"all"}
-                  rightSection={<CustomCopyButton value={password}/>}
-                  value={password} readOnly/>
+                  rightSection={<CustomCopyButton value={password} ariaLabel="Copy password"/>}
+                  value={password} readOnly aria-label="Generated password"/>
       </Box>
     </>
   )
