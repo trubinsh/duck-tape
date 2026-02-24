@@ -1,21 +1,23 @@
-import CodeMirror from '@uiw/react-codemirror';
+import './structure-formatter.css';
 import {json} from '@codemirror/lang-json';
 import {xml} from '@codemirror/lang-xml';
 import {html} from '@codemirror/lang-html';
 import {oneDark} from '@codemirror/theme-one-dark';
 import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "react-router-dom";
-import {ActionIcon, Button, CopyButton, Grid, NumberInput, Tooltip} from "@mantine/core";
-import {notifications} from "@mantine/notifications";
-import {IconCheck, IconCopy, IconX} from "@tabler/icons-react";
-import {indentString} from "@/lib/formatter-utils.ts";
-import {AsideContent} from "@/components/aside-context.tsx";
 import {type Format} from "@/lib/utils.ts";
+import {CodeMirrorCard} from "@/components/code-mirror-card.tsx";
+import {Button, Grid, NativeSelect} from "@mantine/core";
+import {indentString} from "@/lib/formatter-utils.ts";
+import {notifications} from "@mantine/notifications";
+import {IconX} from "@tabler/icons-react";
+import {TitleContent} from "@/components/title-context.tsx";
 
 export default function StructureFormatter() {
   const [params] = useSearchParams()
-  const [format, setFormat] = useState<Format>((params.get('format') as Format) || "Text")
-  const [value, setValue] = useState('')
+  const [format, setFormat] = useState<Format>((params.get('format') as Format) || "JSON")
+  const [inputValue, setInputValue] = useState('')
+  const [outputValue, setOutputValue] = useState('')
   const [formatIndentSize, setFormatIndentSize] = useState<string | number>(2)
 
   useEffect(() => {
@@ -36,82 +38,62 @@ export default function StructureFormatter() {
     return exts;
   }, [format]);
 
+  const minifyString = () => {
+    indentString(inputValue, format, 0)
+      .then(formatted => setOutputValue(formatted))
+      .catch(e => {
+        console.error(e);
+        notifications.show({
+          title: 'Formatting error',
+          message: `Failed to format ${format}`,
+          color: 'red',
+          icon: <IconX size={16}/>
+        });
+      });
+  }
+
+  const formatString = () => {
+    indentString(inputValue, format, parseInt(formatIndentSize as string))
+      .then(formatted => setOutputValue(formatted))
+      .catch(e => {
+        console.error(e);
+        notifications.show({
+          title: 'Formatting error',
+          message: `Failed to format ${format}`,
+          color: 'red',
+          icon: <IconX size={16}/>
+        });
+      });
+  }
+
   return (
-    <div style={{height: 'calc(100vh - 60px - 32px)', width: '100%'}}>
-      <AsideContent>
-        <Grid>
-          <Grid.Col span={6}>
-            <NumberInput label={"Indent Size"} value={formatIndentSize} min={1}
-                         max={8}
-                         onChange={setFormatIndentSize}/>
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <div/>
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <Button
-              fullWidth
-              onClick={() => {
-                indentString(value, format, parseInt(formatIndentSize as string))
-                  .then(formatted => setValue(formatted))
-                  .catch(e => {
-                    console.error(e);
-                    notifications.show({
-                      title: 'Formatting error',
-                      message: `Failed to format ${format}`,
-                      color: 'red',
-                      icon: <IconX size={16}/>
-                    });
-                  });
-              }}
-            >
-              Indent
-            </Button>
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <Button
-              fullWidth
-              onClick={() => {
-                indentString(value, format, 0)
-                  .then(formatted => setValue(formatted))
-                  .catch(e => {
-                    console.error(e);
-                    notifications.show({
-                      title: 'Formatting error',
-                      message: `Failed to format ${format}`,
-                      color: 'red',
-                      icon: <IconX size={16}/>
-                    });
-                  });
-              }}
-            >
-              Inline
-            </Button>
-          </Grid.Col>
-        </Grid>
-      </AsideContent>
-      <div style={{flex: 1, position: 'relative', height: '100%'}}>
-        <div style={{position: 'absolute', top: 10, right: 20, zIndex: 10}}>
-          <CopyButton value={value} timeout={2000}>
-            {({copied, copy}) => (
-              <Tooltip label={copied ? 'Copied' : 'Copy'} withArrow position="right">
-                <ActionIcon color={copied ? 'teal' : 'gray'} variant="light" onClick={copy}>
-                  {copied ? <IconCheck size={16}/> : <IconCopy size={16}/>}
-                </ActionIcon>
-              </Tooltip>
-            )}
-          </CopyButton>
-        </div>
-        <CodeMirror
-          value={value}
-          height="100%"
-          minHeight="100%"
-          theme={oneDark}
-          extensions={extensions}
-          onChange={(newValue) => setValue(newValue)}
-          style={{height: '100%'}}
-        />
-      </div>
+    <div className={"dt-flex-full-height"}>
+      <TitleContent title={`${format} Formatter`}>
+        <Button variant={"filled"} me={"sm"}
+                onClick={minifyString}>Minify</Button>
+        <Button variant={"filled"} me={"sm"}
+                onClick={formatString}>Format</Button>
+        <NativeSelect value={formatIndentSize} data={[
+          {label: 'Indentation (1 spaces)', value: '1'},
+          {label: 'Indentation (2 spaces)', value: '2'},
+          {label: 'Indentation (4 spaces)', value: '4'},
+        ]} onChange={(e) => setFormatIndentSize(e.currentTarget.value)}/>
+      </TitleContent>
+      <Grid className={"dt-flex-full-height"} style={{ flex: 1 }}>
+        <Grid.Col span={6}>
+          <CodeMirrorCard extensions={extensions} onValueChange={setInputValue}
+                          title="Input" value={inputValue}
+                          className={"sf-card"}/>
+        </Grid.Col>
+        <Grid.Col span={6}
+                  style={{
+                    height: '100%'
+                  }}>
+          <CodeMirrorCard extensions={extensions} onValueChange={setOutputValue}
+                          title="Output" value={outputValue}
+                          className={"sf-card"}/>
+        </Grid.Col>
+      </Grid>
     </div>
   );
 }

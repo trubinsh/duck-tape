@@ -98,7 +98,7 @@ describe('TimestampConverter', () => {
       );
 
       // In Mantine DateTimePicker, the placeholder is on the button, but we might need to find it by text or role
-      const button = screen.getByRole('button', { name: /01\/01\/2024/ });
+      const button = screen.getByRole('button', { name: 'Date' });
       expect(button).toBeInTheDocument();
       
       // Since it's hard to simulate a date change in DateTimePicker with jsdom without 

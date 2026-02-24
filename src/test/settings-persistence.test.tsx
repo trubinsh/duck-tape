@@ -6,7 +6,6 @@ import {ApplicationLayout} from '../components/layout/application-layout.tsx';
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import {SETTINGS_KEY} from '../lib/settings.ts';
 import type {ReactNode} from "react";
-import {AsideProvider} from "@/components/aside-context.tsx";
 
 // Mocking scrollIntoView as it's not implemented in jsdom
 Element.prototype.scrollIntoView = vi.fn();
@@ -22,11 +21,9 @@ function TestWrapper({
 }) {
   return (
     <MantineProvider defaultColorScheme={defaultColorScheme}>
-      <AsideProvider>
-        <MemoryRouter initialEntries={initialEntries}>
-          {children}
-        </MemoryRouter>
-      </AsideProvider>
+      <MemoryRouter initialEntries={initialEntries}>
+        {children}
+      </MemoryRouter>
     </MantineProvider>
   );
 }

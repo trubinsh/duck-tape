@@ -1,0 +1,11 @@
+.sf-card {
+    flex: 1;
+    position: relative;
+    height: calc(100vh - 60px - (16px * 3) - var(--mantine-spacing-md) * 2);
+}
+
+.sf-controls-container {
+    justify-content: flex-end;
+    display: flex;
+    width: 100%
+}

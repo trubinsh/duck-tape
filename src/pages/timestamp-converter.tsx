@@ -1,8 +1,9 @@
 import '@mantine/dates/styles.css';
 import './timestamp-converter.css';
-import {Grid, NumberInput, Text, Title} from "@mantine/core";
+import {Card, Grid, NumberInput, Text, Title} from "@mantine/core";
 import {useEffect, useState} from "react";
 import {DateTimePicker} from "@mantine/dates";
+import {TitleContent} from "@/components/title-context.tsx";
 
 const FromEpochConverter = () => {
   const [timestamp, setTimestamp] = useState<number>(parseInt((new Date().getTime() / 1000).toFixed()));
@@ -21,19 +22,33 @@ const FromEpochConverter = () => {
   return (
     <>
       <Title order={3} mb={"sm"}>From Epoch</Title>
-      <NumberInput min={1} max={9999999999999} value={timestamp}
-                   onChange={(v) => setTimestamp(v as number)} hideControls
-                   placeholder={"Epoch timestamp"}/>
-      {
-        date && (
-          <div className={"time-converter-output-container"}>
-            <Text fw={1000}>Local time:</Text>
-            <Text> {date.toString()}</Text>
-            <p/>
-            <Text fw={1000}>UTC time:</Text>
-            <Text> {date.toUTCString()}</Text>
-          </div>)
-      }
+      <Card withBorder>
+        <NumberInput label={"Timestamp"} min={1} max={9999999999999}
+                     value={timestamp}
+                     onChange={(v) => setTimestamp(v as number)} hideControls
+                     placeholder={"Epoch timestamp"}/>
+        {
+          date && (
+            <div className={"time-converter-output-container"}>
+              <Card withBorder mb={"md"}>
+                <Card.Section withBorder>
+                  <Title order={4} m={"xs"}>Local time</Title>
+                </Card.Section>
+                <Card.Section>
+                  <Text m={"xs"}>{date.toString()}</Text>
+                </Card.Section>
+              </Card>
+              <Card withBorder>
+                <Card.Section withBorder>
+                  <Title order={4} m={"xs"}>UTC time</Title>
+                </Card.Section>
+                <Card.Section>
+                  <Text m={"xs"}>{date.toUTCString()}</Text>
+                </Card.Section>
+              </Card>
+            </div>)
+        }
+      </Card>
     </>
   )
 }
@@ -43,14 +58,24 @@ const ToEpochConverter = () => {
   return (
     <>
       <Title order={3} mb={"sm"}>To Epoch</Title>
-      <DateTimePicker value={date} onChange={(v) => setDate(new Date(v!))} placeholder={"Select date and time"} withSeconds/>
-      {
-        date && (
-          <div className={"time-converter-output-container"}>
-            <Text fw={1000}>Epoch timestamp:</Text>
-            <Text> {(date.getTime() / 1000).toFixed()}</Text>
-          </div>)
-      }
+      <Card withBorder>
+        <DateTimePicker label={"Date"} value={date}
+                        onChange={(v) => setDate(new Date(v!))}
+                        placeholder={"Select date and time"} withSeconds/>
+        {
+          date && (
+            <div className={"time-converter-output-container"}>
+              <Card shadow={"sm"} withBorder>
+                <Card.Section withBorder>
+                  <Title order={4} m={"xs"}>Epoch timestamp</Title>
+                </Card.Section>
+                <Card.Section>
+                  <Text m={"xs"}>{(date.getTime() / 1000).toFixed()}</Text>
+                </Card.Section>
+              </Card>
+            </div>)
+        }
+      </Card>
     </>
   )
 }
@@ -58,14 +83,17 @@ const ToEpochConverter = () => {
 function TimestampConverter() {
 
   return (
-    <Grid ms={"sm"} mt={"sm"}>
-      <Grid.Col span={6}>
-        <FromEpochConverter/>
-      </Grid.Col>
-      <Grid.Col span={6}>
-        <ToEpochConverter/>
-      </Grid.Col>
-    </Grid>
+    <div className={"dt-flex-full-height"}>
+      <TitleContent title={"Timestamp Converter"}/>
+      <Grid mt={"sm"} style={{ flex: 1 }}>
+        <Grid.Col span={6}>
+          <FromEpochConverter/>
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <ToEpochConverter/>
+        </Grid.Col>
+      </Grid>
+    </div>
   )
 }
 

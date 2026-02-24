@@ -1,7 +1,7 @@
-.diff-viewer-root {
+.dv-container {
     flex: 1;
     position: relative;
-    height: 100%;
+    height: calc(98vh - 60px - 32px);
 }
 
 .cm-mergeViewEditors {
