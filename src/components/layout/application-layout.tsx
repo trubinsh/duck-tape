@@ -1,14 +1,16 @@
 import svgLogo from '@/assets/logo.svg';
 import {
   ActionIcon,
-  AppShell, Box,
+  AppShell,
   Container,
   Divider,
   Grid,
-  Group, Image,
+  Group,
+  Image,
   NavLink,
   ScrollArea,
-  Switch, Text,
+  Switch,
+  Text,
   Title,
   useComputedColorScheme,
   useMantineColorScheme
@@ -72,7 +74,7 @@ export function ApplicationLayout({children}: {
     }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsInitialized(true);
-  }, [location.pathname, navigate]);
+  }, [location.pathname, navigate, settings.lastPage]);
 
   useEffect(() => {
     if (isInitialized) {
@@ -106,10 +108,11 @@ export function ApplicationLayout({children}: {
     >
       <AppShell.Navbar p="md">
         <AppShell.Section>
-          <Box >
-            <Image src={svgLogo}  w={70} h={60}/>
-            <Text gradient={{from: 'grey', to:'orange', deg: 90}} variant={'gradient'} size={'xl'}>DuckTape</Text>
-          </Box>
+          <Text gradient={{from: 'grey', to: 'orange', deg: 90}}
+                variant={'gradient'} size={'xl'}>
+            <Image src={svgLogo} w={70} h={60}/>
+            DuckTape
+          </Text>
         </AppShell.Section>
         <Divider mt={"md"} mb={"md"}/>
         <AppShell.Section>
@@ -175,7 +178,13 @@ export function ApplicationLayout({children}: {
           </Grid.Col>
         </Grid>
         <Divider/>
-        <Container fluid mt={"xs"} ml={0} mr="auto" style={{ width: '85%', display: 'flex', flexDirection: 'column', flex: 1, padding: 0 }}>
+        <Container fluid mt={"xs"} ml={0} mr="auto" style={{
+          width: '85%',
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+          padding: 0
+        }}>
           {children}
         </Container>
       </AppShell.Main>
