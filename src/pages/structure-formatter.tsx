@@ -25,6 +25,8 @@ export default function StructureFormatter() {
     if (format) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormat(format);
+      setInputValue('');
+      setOutputValue('');
     }
   }, [params]);
 

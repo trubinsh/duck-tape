@@ -1,5 +1,5 @@
 import './encoder.css';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Card, Grid, Group, Stack, Text, Textarea} from "@mantine/core";
 import {IconX} from "@tabler/icons-react";
 import {notifications} from "@mantine/notifications";
@@ -30,6 +30,12 @@ export function Encoder() {
 function SimpleEncoder({format}: { format: Format }) {
   const [encodedValue, setEncodedValue] = useState('')
   const [decodedValue, setDecodedValue] = useState('')
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setEncodedValue('')
+    setDecodedValue('')
+  }, [format]);
 
   const decodeValue = (value: string) => {
     setEncodedValue(value)
