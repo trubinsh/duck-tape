@@ -110,7 +110,7 @@ export function ApplicationLayout({children}: {
         <AppShell.Section>
           <Text gradient={{from: 'grey', to: 'orange', deg: 90}}
                 variant={'gradient'} size={'xl'}>
-            <Image src={svgLogo} w={70} h={60}/>
+            <Image src={svgLogo} w={75} h={60}/>
             DuckTape
           </Text>
         </AppShell.Section>
@@ -153,6 +153,7 @@ export function ApplicationLayout({children}: {
           }
         </AppShell.Section>
         <AppShell.Section>
+          <Divider mb={"md"} mt={"md"}/>
           <Group gap={"md"}>
             <ThemeControl/>
             {

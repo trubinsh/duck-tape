@@ -30,7 +30,7 @@ const FromEpochConverter = () => {
         {
           date && (
             <div className={"time-converter-output-container"}>
-              <Card withBorder mb={"md"}>
+              <Card shadow={"sm"}  withBorder mb={"md"}>
                 <Card.Section withBorder>
                   <Title order={4} m={"xs"}>Local time</Title>
                 </Card.Section>
@@ -38,7 +38,7 @@ const FromEpochConverter = () => {
                   <Text m={"xs"}>{date.toString()}</Text>
                 </Card.Section>
               </Card>
-              <Card withBorder>
+              <Card shadow={"sm"}  withBorder>
                 <Card.Section withBorder>
                   <Title order={4} m={"xs"}>UTC time</Title>
                 </Card.Section>

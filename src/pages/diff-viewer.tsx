@@ -5,26 +5,33 @@ import {useEffect, useRef} from "react";
 import {json} from "@codemirror/lang-json";
 import {oneDark} from "@codemirror/theme-one-dark";
 import {TitleContent} from "@/components/title-context.tsx";
+import {xml} from "@codemirror/lang-xml";
+import {html} from "@codemirror/lang-html";
+import type {Extension} from "@uiw/react-codemirror";
+import {useMantineColorScheme} from "@mantine/core";
 
 export default function DiffViewer() {
   const mergeViewRef = useRef<HTMLDivElement>(null)
+  const {colorScheme} = useMantineColorScheme();
 
   useEffect(() => {
     if (!mergeViewRef.current) return;
+
+    const extension: Extension[] = [
+      json(),
+      xml(),
+      html(),
+      basicSetup
+    ]
+
+    if(colorScheme === 'dark') extension.push(oneDark)
+
     const view = new MergeView({
       a: {
-        extensions: [
-          oneDark,
-          json(),
-          basicSetup
-        ]
+        extensions: extension
       },
       b: {
-        extensions: [
-          oneDark,
-          json(),
-          basicSetup,
-        ]
+        extensions: extension
       },
       gutter: true,
       parent: mergeViewRef.current,
@@ -32,7 +39,7 @@ export default function DiffViewer() {
       highlightChanges: true,
     })
     return () => view.destroy()
-  }, [mergeViewRef]);
+  }, [colorScheme, mergeViewRef]);
 
   return (
     <div className={"dt-flex-full-height"}>

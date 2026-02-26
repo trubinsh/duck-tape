@@ -1,12 +1,6 @@
 import './code-mirror-card.css'
-import {
-  Card,
-  type CardProps,
-  Group,
-  Text,
-} from "@mantine/core";
+import {Card, type CardProps, Group, Text,} from "@mantine/core";
 import CodeMirror, {type Extension} from "@uiw/react-codemirror";
-import {oneDark} from "@codemirror/theme-one-dark";
 import {CustomCopyButton} from "@/components/custom-copy-button.tsx";
 
 interface CustomPaperProps {
@@ -14,10 +8,11 @@ interface CustomPaperProps {
   value: string;
   extensions: Extension[];
   onValueChange: (newValue: string) => void;
+  theme: 'light' | 'dark';
 }
 
 
-  function CodeMirrorCard({title, value, style, className, onValueChange, extensions}: CustomPaperProps & CardProps) {
+function CodeMirrorCard({title, value, style, className, onValueChange, extensions, theme}: CustomPaperProps & CardProps) {
   return (
     <Card withBorder style={style} className={className}>
       <Card.Section className={"cmc-header"}>
@@ -29,7 +24,7 @@ interface CustomPaperProps {
       <Card.Section className={"cmc-body"}>
         <CodeMirror
           value={value}
-          theme={oneDark}
+          theme={theme}
           extensions={extensions}
           onChange={onValueChange}
           style={{height: '100%'}}
