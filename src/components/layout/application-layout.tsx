@@ -1,13 +1,14 @@
+import svgLogo from '@/assets/logo.svg';
 import {
   ActionIcon,
-  AppShell,
+  AppShell, Box,
   Container,
   Divider,
   Grid,
-  Group,
+  Group, Image,
   NavLink,
   ScrollArea,
-  Switch,
+  Switch, Text,
   Title,
   useComputedColorScheme,
   useMantineColorScheme
@@ -105,7 +106,10 @@ export function ApplicationLayout({children}: {
     >
       <AppShell.Navbar p="md">
         <AppShell.Section>
-          DuckTape
+          <Box >
+            <Image src={svgLogo}  w={70} h={60}/>
+            <Text gradient={{from: 'grey', to:'orange', deg: 90}} variant={'gradient'} size={'xl'}>DuckTape</Text>
+          </Box>
         </AppShell.Section>
         <Divider mt={"md"} mb={"md"}/>
         <AppShell.Section>
