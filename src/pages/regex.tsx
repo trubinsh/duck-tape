@@ -9,7 +9,7 @@ import {
 } from "@codemirror/view";
 import {javascript} from "@codemirror/lang-javascript";
 import {useMemo, useState} from "react";
-import {Alert, Paper, Stack, Text} from "@mantine/core";
+import {Alert, Paper, Stack, Text, useMantineColorScheme} from "@mantine/core";
 import {IconAlertCircle} from "@tabler/icons-react";
 import {TitleContent} from "@/components/title-context.tsx";
 
@@ -17,6 +17,7 @@ export function RegexPage() {
   const [regexStr, setRegexStr] = useState('');
   const [testString, setTestString] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const {colorScheme} = useMantineColorScheme();
 
   const regex = useMemo(() => {
     try {
@@ -72,7 +73,12 @@ export function RegexPage() {
     return extensions;
   }, [matchDecorator]);
 
-  const regexExtensions = useMemo(() => [javascript(), oneDark], []);
+  const regexExtensions = useMemo(() => {
+    const extensions = []
+    if(colorScheme === 'dark') extensions.push(oneDark)
+    extensions.push(javascript())
+    return extensions
+  }, [colorScheme])
 
   return (
     <div className={"dt-flex-full-height"}>
@@ -84,7 +90,6 @@ export function RegexPage() {
           <Text size="sm" mb={4} fw={500}>Regular Expression</Text>
           <CodeMirror
             value={regexStr}
-            theme={oneDark}
             extensions={regexExtensions}
             onChange={(value) => setRegexStr(value)}
             style={{height: '30px'}}
@@ -109,7 +114,6 @@ export function RegexPage() {
           <Text size="sm" mb={4} fw={500}>Test String</Text>
           <CodeMirror
             value={testString}
-            theme={oneDark}
             height="100%"
             minHeight="100%"
             extensions={matchHighlighter}
