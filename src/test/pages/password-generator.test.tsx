@@ -1,6 +1,6 @@
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {PasswordGenerator} from '@/pages/password-generator';
+import {PasswordGenerator} from '@/pages/password-generator/password-generator.tsx';
 import {MantineProvider} from '@mantine/core';
 import {TitleContext, TitleProvider} from "@/components/title-context";
 
