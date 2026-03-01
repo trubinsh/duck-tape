@@ -4,21 +4,28 @@ import {xml} from '@codemirror/lang-xml';
 import {html} from '@codemirror/lang-html';
 import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "react-router-dom";
-import {type Format} from "@/lib/utils.ts";
+import {type Format, formatterIndentations} from "@/lib/utils.ts";
 import {CodeMirrorCard} from "@/components/code-mirror-card.tsx";
 import {Button, Grid, NativeSelect, useMantineColorScheme} from "@mantine/core";
 import {indentString} from "@/lib/formatter-utils.ts";
 import {notifications} from "@mantine/notifications";
 import {IconX} from "@tabler/icons-react";
 import {TitleContent} from "@/components/title-context.tsx";
+import {useSettings} from "@/lib/settings.ts";
 
 export default function StructureFormatter() {
   const [params] = useSearchParams()
+  const {settings} = useSettings()
   const [format, setFormat] = useState<Format>((params.get('format') as Format) || "JSON")
   const [inputValue, setInputValue] = useState('')
   const [outputValue, setOutputValue] = useState('')
-  const [formatIndentSize, setFormatIndentSize] = useState<string | number>(2)
+  const [formatIndentSize, setFormatIndentSize] = useState<string | number>(settings.formatter.indentSize)
   const {colorScheme} = useMantineColorScheme();
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFormatIndentSize(settings.formatter.indentSize);
+  }, [settings.formatter.indentSize]);
 
   useEffect(() => {
     const format = params.get('format') as Format;
@@ -73,11 +80,7 @@ export default function StructureFormatter() {
                 onClick={minifyString}>Minify</Button>
         <Button variant={"filled"} me={"sm"}
                 onClick={formatString}>Format</Button>
-        <NativeSelect value={formatIndentSize} data={[
-          {label: 'Indentation (1 spaces)', value: '1'},
-          {label: 'Indentation (2 spaces)', value: '2'},
-          {label: 'Indentation (4 spaces)', value: '4'},
-        ]} onChange={(e) => setFormatIndentSize(e.currentTarget.value)}/>
+        <NativeSelect value={formatIndentSize} data={formatterIndentations} onChange={(e) => setFormatIndentSize(e.currentTarget.value)}/>
       </TitleContent>
       <Grid className={"dt-flex-full-height"} style={{ flex: 1 }}>
         <Grid.Col span={6}>

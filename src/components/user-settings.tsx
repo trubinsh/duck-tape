@@ -1,24 +1,25 @@
 import {
   ActionIcon,
   Button, Grid,
-  Modal,
+  Modal, NativeSelect,
   Stack,
   Switch,
-  Tabs,
+  Tabs, Text,
   useComputedColorScheme,
   useMantineColorScheme
 } from "@mantine/core";
 import {IconMoon, IconSun} from "@tabler/icons-react";
-import {useBrowser} from "@/lib/utils.ts";
+import {formatterIndentations, useBrowser} from "@/lib/utils.ts";
 import {useClipboardAwareContext} from "@/lib/clipboard-aware-context.ts";
+import {useSettings, type UserSettings} from "@/lib/settings.ts";
+import {useEffect, useState} from "react";
 
 interface UserSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-function ThemeControl() {
-  const {setColorScheme} = useMantineColorScheme();
+function ThemeControl({setColorScheme}: {setColorScheme: (scheme: 'light' | 'dark') => void}) {
   const computedColorScheme = useComputedColorScheme('light', {getInitialValueInEffect: true});
 
   const toggleColorScheme = () => {
@@ -45,9 +46,29 @@ function ThemeControl() {
 function UserSettingsModal({isOpen, onClose}: UserSettingsModalProps) {
   const browser = useBrowser();
   const {
-    enableClipboardAware,
     setEnableClipboardAware
   } = useClipboardAwareContext()
+  const {settings: globalSettings, updateSettings} = useSettings();
+  const [settings, setSettings] = useState<UserSettings>(globalSettings)
+  const {setColorScheme} = useMantineColorScheme();
+
+  useEffect(() => {
+    if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSettings(globalSettings);
+    }
+  }, [isOpen, globalSettings]);
+
+  const onSave = () => {
+    updateSettings(settings);
+    onClose();
+  }
+
+  const onCancel = () => {
+    setColorScheme(globalSettings.general.theme)
+    setEnableClipboardAware(globalSettings.general.smartSearchEnabled)
+    onClose();
+  }
 
   return (
     <Modal opened={isOpen} onClose={onClose} title="User Settings">
@@ -62,25 +83,39 @@ function UserSettingsModal({isOpen, onClose}: UserSettingsModalProps) {
             <Stack gap={"md"}>
               {
                 // SmartSearch not supported on Safari yet. Safari has a lockdown on read from clipboard only for user-specific actions, Clipboard API does not allow direct reads
-                browser !== "Safari" && <Switch checked={enableClipboardAware}
-                                                onChange={e => setEnableClipboardAware(e.currentTarget.checked)}
+                browser !== "Safari" && <Switch checked={settings.general.smartSearchEnabled}
+                                                onChange={e => {
+                                                    const checked = e.currentTarget.checked;
+                                                    setSettings({...settings, general: {...settings.general, smartSearchEnabled: checked}});
+                                                    setEnableClipboardAware(checked);
+                                                }}
                                                 label={"Smart Search"} labelPosition={'left'}></Switch>
               }
-              <ThemeControl/>
+              <ThemeControl setColorScheme={(scheme) => {
+                  setSettings({...settings, general: {...settings.general, theme: scheme}});
+                  setColorScheme(scheme);
+              }}/>
             </Stack>
           </Tabs.Panel>
-          <Tabs.Panel value="formatter">
-            Formatter settings
+          <Tabs.Panel mt={"md"} value="formatter">
+            <Grid>
+              <Grid.Col span={5}>
+                <Text>Indentation size</Text>
+              </Grid.Col>
+              <Grid.Col span={7}>
+                <NativeSelect value={settings.formatter.indentSize} data={formatterIndentations} onChange={(e) => setSettings({...settings, formatter: {indentSize: parseInt(e.currentTarget.value)}})}/>
+              </Grid.Col>
+            </Grid>
           </Tabs.Panel>
 
         </Tabs>
         <Grid>
           <Grid.Col span={6}/>
           <Grid.Col span={3}>
-            <Button variant={"outline"} onClick={onClose}>Cancel</Button>
+            <Button variant={"outline"} onClick={onCancel}>Cancel</Button>
           </Grid.Col>
           <Grid.Col span={3}>
-            <Button variant={"filled"} onClick={onClose}>Save</Button>
+            <Button variant={"filled"} onClick={onSave}>Save</Button>
           </Grid.Col>
         </Grid>
       </Stack>
