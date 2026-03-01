@@ -166,42 +166,69 @@ function JWTEncoder() {
 
   return (
     <div className={"dt-flex-full-height"}>
-      <TitleContent title={"JWT Encoder/Decoder"}>
-      </TitleContent>
+      <TitleContent title={"JWT Encoder/Decoder"}/>
       <Grid style={{ flex: 1 }}>
         <Grid.Col span={6} className={"dt-flex-full-height"}>
-          <Text fw={500}>Encoded</Text>
-          <Textarea
-            placeholder={`JWT encoded string`}
-            value={encodedValue}
-            onChange={(newValue) => decodeValue(newValue.currentTarget.value)}
-            mt={"sm"}
-            autosize
-            rightSection={<CustomCopyButton value={encodedValue}/>}
-            rightSectionPointerEvents={"all"}
-            styles={{
-              root: {flex: 1, display: 'flex', flexDirection: 'column'},
-              wrapper: {flex: 1},
-              input: {flex: 1}
-            }}
-          />
+          <Card withBorder>
+            <Card.Section className={"e-card-header"}>
+              <Group justify="space-between">
+                <Text fw={500}>JWT</Text>
+                <CustomCopyButton value={encodedValue}/>
+              </Group>
+            </Card.Section>
+            <Card.Section>
+              <Textarea
+                placeholder={`JWT encoded string`}
+                value={encodedValue}
+                onChange={(newValue) => decodeValue(newValue.currentTarget.value)}
+                autosize
+                rightSection={<CustomCopyButton value={encodedValue}/>}
+                rightSectionPointerEvents={"all"}
+                styles={{
+                  root: {flex: 1, display: 'flex', flexDirection: 'column'},
+                  wrapper: {flex: 1},
+                  input: {flex: 1}
+                }}
+              />
+            </Card.Section>
+          </Card>
         </Grid.Col>
         <Grid.Col span={6} className={"dt-flex-full-height"}>
           <Stack gap="xs">
-            <Text fw={500}>Headers</Text>
-            <CodeHighlight
-              code={decodedHeader}
-              language="json"
-              radius={"md"}
-              styles={{code: {height: '25vh', overflow: 'auto'}}}
-            />
-            <Text fw={500}>Body</Text>
-            <CodeHighlight
-              code={decodedBody}
-              language="json"
-              radius={"md"}
-              styles={{code: {height: '54vh', overflow: 'auto'}}}
-            />
+            <Card withBorder>
+              <Card.Section className={"e-card-header"}>
+                <Group justify="space-between">
+                    <Text fw={500}>Header</Text>
+                    <CustomCopyButton value={decodedHeader}/>
+                </Group>
+              </Card.Section>
+              <Card.Section>
+                <CodeHighlight
+                  withCopyButton={false}
+                  code={decodedHeader}
+                  language="json"
+                  radius={"md"}
+                  styles={{code: {height: '25vh', overflow: 'auto'}}}
+                />
+              </Card.Section>
+            </Card>
+            <Card withBorder>
+              <Card.Section className={"e-card-header"}>
+                <Group justify="space-between">
+                  <Text fw={500}>Body</Text>
+                  <CustomCopyButton value={decodedBody}/>
+                </Group>
+              </Card.Section>
+              <Card.Section>
+                <CodeHighlight
+                  code={decodedBody}
+                  withCopyButton={false}
+                  language="json"
+                  radius={"md"}
+                  styles={{code: {height: '50vh', overflow: 'auto'}}}
+                />
+              </Card.Section>
+            </Card>
           </Stack>
         </Grid.Col>
       </Grid>
