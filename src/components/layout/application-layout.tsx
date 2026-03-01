@@ -9,46 +9,18 @@ import {
   Image,
   NavLink,
   ScrollArea,
-  Switch,
   Text,
   Title,
-  useComputedColorScheme,
-  useMantineColorScheme
 } from '@mantine/core';
-import {IconMoon, IconSun} from '@tabler/icons-react';
+import {IconSettings} from '@tabler/icons-react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import {isToolGroup, tools, useBrowser, useTitle} from "@/lib/utils.ts";
+import {isToolGroup, tools, useTitle} from "@/lib/utils.ts";
 import * as React from "react";
-import {type BaseSyntheticEvent, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {loadSettings, saveSettings} from "@/lib/settings.ts";
-import {useClipboardAwareContext} from "@/lib/clipboard-aware-context.ts";
 import {SearchAutocomplete} from "@/components/search-autocomplete.tsx";
-
-function ThemeControl() {
-  const {setColorScheme} = useMantineColorScheme();
-  const computedColorScheme = useComputedColorScheme('light', {getInitialValueInEffect: true});
-
-  const toggleColorScheme = () => {
-    const newScheme = computedColorScheme === 'light' ? 'dark' : 'light';
-    setColorScheme(newScheme);
-    saveSettings({theme: newScheme});
-  };
-
-  return (
-    <ActionIcon
-      onClick={toggleColorScheme}
-      variant="default"
-      size="lg"
-      aria-label="Toggle color scheme"
-    >
-      {computedColorScheme === 'light' ? (
-        <IconMoon stroke={1.5}/>
-      ) : (
-        <IconSun stroke={1.5}/>
-      )}
-    </ActionIcon>
-  );
-}
+import {useDisclosure} from "@mantine/hooks";
+import {UserSettingsModal} from "@/components/user-settings.tsx";
 
 export function ApplicationLayout({children}: {
   children: React.ReactNode
@@ -57,16 +29,8 @@ export function ApplicationLayout({children}: {
   const location = useLocation();
   const navigate = useNavigate();
   const [isInitialized, setIsInitialized] = useState(false);
-  const browser = useBrowser();
   const {content: titleContent, title} = useTitle();
-  const {
-    enableClipboardAware,
-    setEnableClipboardAware
-  } = useClipboardAwareContext()
-
-  useEffect(() => {
-    setEnableClipboardAware(settings.smartSearchEnabled)
-  }, [setEnableClipboardAware, settings.smartSearchEnabled]);
+  const [opened, {open, close}] = useDisclosure(false);
 
   useEffect(() => {
     if (settings.lastPage && settings.lastPage !== location.pathname && location.pathname === '/') {
@@ -82,113 +46,112 @@ export function ApplicationLayout({children}: {
     }
   }, [location.pathname, isInitialized]);
 
-  const handleSmartSearchToggle = (e: BaseSyntheticEvent) => {
-    setEnableClipboardAware(e.currentTarget.checked)
-    saveSettings({smartSearchEnabled: e.currentTarget.checked})
-  }
-
   return (
-    <AppShell
-      navbar={{width: 300, breakpoint: 'sm'}}
-      padding="md"
-      styles={{
-        main: {
-          backgroundColor: 'var(--mantine-color-body)',
-        },
-        navbar: {
-          backgroundColor: 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))',
-        },
-        aside: {
-          backgroundColor: 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))',
-        },
-        header: {
-          backgroundColor: 'var(--mantine-color-body)',
-        },
-      }}
-    >
-      <AppShell.Navbar p="md">
-        <AppShell.Section>
-          <Text gradient={{from: 'grey', to: 'orange', deg: 90}}
-                variant={'gradient'} size={'xl'}>
-            <Image src={svgLogo} w={75} h={60}/>
-            DuckTape
-          </Text>
-        </AppShell.Section>
-        <Divider mt={"md"} mb={"md"}/>
-        <AppShell.Section>
-          <SearchAutocomplete/>
-        </AppShell.Section>
-        <AppShell.Section grow component={ScrollArea}>
-          {
-            tools.map((tool) => {
-              if (isToolGroup(tool)) {
-                return (
-                  <NavLink
-                    key={tool.group}
-                    label={tool.group}
+    <>
+      <AppShell
+        navbar={{width: 300, breakpoint: 'sm'}}
+        padding="md"
+        styles={{
+          main: {
+            backgroundColor: 'var(--mantine-color-body)',
+          },
+          navbar: {
+            backgroundColor: 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))',
+          },
+          aside: {
+            backgroundColor: 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))',
+          },
+          header: {
+            backgroundColor: 'var(--mantine-color-body)',
+          },
+        }}
+      >
+        <AppShell.Navbar p="md">
+          <AppShell.Section>
+            <Text gradient={{from: 'grey', to: 'orange', deg: 90}}
+                  variant={'gradient'} size={'xl'}>
+              <Image src={svgLogo} w={75} h={60}/>
+              DuckTape
+            </Text>
+          </AppShell.Section>
+          <Divider mt={"md"} mb={"md"}/>
+          <AppShell.Section>
+            <SearchAutocomplete/>
+          </AppShell.Section>
+          <AppShell.Section grow component={ScrollArea}>
+            {
+              tools.map((tool) => {
+                if (isToolGroup(tool)) {
+                  return (
+                    <NavLink
+                      key={tool.group}
+                      label={tool.group}
+                      childrenOffset={28}
+                      defaultOpened
+                    >
+                      {
+                        tool.tools.map(t => (
+                          <NavLink label={`${t.name}`}
+                                   key={`${t.name}-${t.redirectUrl}`}
+                                   component={Link}
+                                   to={t.redirectUrl}/>
+                        ))
+                      }
+                    </NavLink>
+                  )
+                } else {
+                  return <NavLink
+                    key={tool.redirectUrl}
+                    to={tool.redirectUrl!}
+                    component={Link}
+                    label={tool.name}
                     childrenOffset={28}
                     defaultOpened
-                  >
-                    {
-                      tool.tools.map(t => (
-                        <NavLink label={`${t.name}`}
-                                 key={`${t.name}-${t.redirectUrl}`}
-                                 component={Link}
-                                 to={t.redirectUrl}/>
-                      ))
-                    }
-                  </NavLink>
-                )
-              } else {
-                return <NavLink
-                  key={tool.redirectUrl}
-                  to={tool.redirectUrl!}
-                  component={Link}
-                  label={tool.name}
-                  childrenOffset={28}
-                  defaultOpened
-                />
-              }
-            })
-          }
-        </AppShell.Section>
-        <AppShell.Section>
-          <Divider mb={"md"} mt={"md"}/>
-          <Group gap={"md"}>
-            <ThemeControl/>
-            {
-              // SmartSearch not supported on Safari yet. Safari has a lockdown on read from clipboard only for user-specific actions, Clipboard API does not allow direct reads
-              browser !== "Safari" && <Switch checked={enableClipboardAware}
-                                              onChange={handleSmartSearchToggle}
-                                              label={"Smart Search"}></Switch>
+                  />
+                }
+              })
             }
-          </Group>
-        </AppShell.Section>
-      </AppShell.Navbar>
-
-      <AppShell.Main style={{display: 'flex', flexDirection: 'column'}}>
-        <Divider/>
-        <Grid m={"md"}>
-          <Grid.Col span={3}>
-            <Title order={4}>{title}</Title>
-          </Grid.Col>
-          <Grid.Col span={9}>
-            <Group justify={"flex-end"}>
-              {titleContent}
+          </AppShell.Section>
+          <AppShell.Section>
+            <Divider mb={"md"} mt={"md"}/>
+            <Group gap={"md"}>
+              <ActionIcon
+                onClick={open}
+                variant="default"
+                size="lg"
+                aria-label="Toggle color scheme"
+              >
+                <IconSettings/>
+              </ActionIcon>
             </Group>
-          </Grid.Col>
-        </Grid>
-        <Divider/>
-        <Container fluid mt={"xs"} ml={0} mr="auto" style={{
-          width: '85%',
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
-          padding: 0
-        }}>
-          {children}
-        </Container>
-      </AppShell.Main>
-    </AppShell>
+          </AppShell.Section>
+        </AppShell.Navbar>
+
+        <AppShell.Main style={{display: 'flex', flexDirection: 'column'}}>
+          <Divider/>
+          <Grid m={"md"}>
+            <Grid.Col span={3}>
+              <Title order={4}>{title}</Title>
+            </Grid.Col>
+            <Grid.Col span={9}>
+              <Group justify={"flex-end"}>
+                {titleContent}
+              </Group>
+            </Grid.Col>
+          </Grid>
+          <Divider/>
+          <Container fluid mt={"xs"} ml={0} mr="auto" style={{
+            width: '85%',
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+            padding: 0
+          }}>
+            {children}
+          </Container>
+        </AppShell.Main>
+      </AppShell>
+      <UserSettingsModal isOpen={opened} onClose={close}/>
+    </>
   );
 }
