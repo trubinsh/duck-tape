@@ -13,13 +13,19 @@ import {postMessage} from "@/lib/worker-utils.ts";
 import {notifications} from "@mantine/notifications";
 import {CustomCopyButton} from "@/components/custom-copy-button.tsx";
 import {TitleContent} from "@/components/title-context.tsx";
-
-const uuidVersions = ['v1', 'v4', 'v5', 'v6', 'v7'];
+import {maxUuidCount, uuidVersions} from "@/pages/uuid-generator/uuid-generator.ts";
+import {useSettings} from "@/lib/settings.ts";
 
 function UUIDGenerator() {
+  const {settings} = useSettings()
   const [version, setVersion] = useState('v4');
   const [count, setCount] = useState(1);
   const [uuids, setUuids] = useState<string[]>([]);
+
+  useEffect(() => {
+    setVersion(settings.uuidGenerator.version)
+    setCount(settings.uuidGenerator.count)
+  }, [settings.uuidGenerator.count, settings.uuidGenerator.version]);
 
   const generateUuid = (version: string) => {
     postMessage<string[]>({type: 'GENERATE_UUID', count, version})
@@ -53,7 +59,7 @@ function UUIDGenerator() {
                   onChange={e => setVersion(e!)}/>
         </Tooltip>
         <Tooltip label={"Count"}>
-          <NumberInput value={count} min={1} max={30}
+          <NumberInput value={count} min={1} max={maxUuidCount}
                        data-testid="count-input"
                        onChange={e => setCount(e as number)}/>
         </Tooltip>

@@ -11,6 +11,10 @@ export interface UserSettings {
   formatter: {
     indentSize: number;
   };
+  uuidGenerator: {
+    version: string;
+    count: number;
+  }
 }
 
 const DEFAULT_SETTINGS: UserSettings = {
@@ -21,6 +25,10 @@ const DEFAULT_SETTINGS: UserSettings = {
   },
   formatter: {
     indentSize: 2,
+  },
+  uuidGenerator: {
+    version: 'v7',
+    count: 1,
   },
 };
 

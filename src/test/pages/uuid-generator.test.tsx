@@ -1,7 +1,7 @@
 import {act, fireEvent, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {UUIDGenerator} from '@/pages/uuid-generator';
+import {UUIDGenerator} from '@/pages/uuid-generator/uuid-generator.ts';
 import {MantineProvider} from '@mantine/core';
 import {TitleContext, TitleProvider} from "@/components/title-context";
 
