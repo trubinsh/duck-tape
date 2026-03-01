@@ -1,5 +1,5 @@
 import './password-generator.css';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {
   Box,
   Button,
@@ -13,16 +13,24 @@ import {notifications} from "@mantine/notifications";
 import {postMessage} from "@/lib/worker-utils.ts";
 import {CustomCopyButton} from "@/components/custom-copy-button.tsx";
 import {TitleContent} from "@/components/title-context.tsx";
-
-const LOWER = 'abcdefghijklmnopqrstuvwxyz';
-const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const NUMBERS = '0123456789';
-const SPECIAL = '!@#$%^&*()_+~`|}{[]\\:;?><,./-=';
+import {
+  LOWER, maxLength, minLength,
+  NUMBERS, SPECIAL,
+  UPPER
+} from "@/pages/password-generator/password-generator.ts";
+import {useSettings} from "@/lib/settings.ts";
 
 function PasswordGenerator() {
-  const [characters, setCharacters] = useState<string[]>([LOWER, UPPER]);
+  const {settings} = useSettings()
+  const [characters, setCharacters] = useState<string[]>(settings.passwordGenerator.characters);
   const [password, setPassword] = useState('');
-  const [length, setLength] = useState(16);
+  const [length, setLength] = useState(settings.passwordGenerator.length);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCharacters(settings.passwordGenerator.characters)
+    setLength(settings.passwordGenerator.length)
+  }, [settings.passwordGenerator.characters, settings.passwordGenerator.length])
 
   const onGeneratePassword = () => {
     postMessage<string>({type: 'GENERATE_PASSWORD', length, characters})
@@ -45,8 +53,8 @@ function PasswordGenerator() {
         <Button variant={"filled"} me={"sm"}
                 onClick={onGeneratePassword}>Generate</Button>
         <Tooltip label={"Password length"}>
-          <NumberInput placeholder={"Length"} value={length} min={6}
-                       max={128}
+          <NumberInput placeholder={"Length"} value={length} min={minLength}
+                       max={maxLength}
                        aria-label={"Password length"}
                        data-testid="length-input"
                        onChange={(v) => setLength(v as number)}/>

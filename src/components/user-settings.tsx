@@ -1,7 +1,7 @@
 import {
   ActionIcon,
   Button, Grid,
-  Modal, NativeSelect, NumberInput,
+  Modal, MultiSelect, NativeSelect, NumberInput,
   Stack,
   Switch,
   Tabs, Text,
@@ -17,6 +17,11 @@ import {maxUuidCount, uuidVersions} from "@/pages/uuid-generator/uuid-generator.
 import {
   formatterIndentations
 } from "@/pages/structure-formatter/structure-formatter.ts";
+import {
+  LOWER, maxLength, minLength,
+  NUMBERS, SPECIAL,
+  UPPER
+} from "@/pages/password-generator/password-generator.ts";
 
 interface UserSettingsModalProps {
   isOpen: boolean;
@@ -74,14 +79,23 @@ function UserSettingsModal({isOpen, onClose}: UserSettingsModalProps) {
     onClose();
   }
 
+  const setPasswordGeneratorCharacters = (characters: string[]) => {
+    if(characters.length > 0) {
+      setSettings({
+        ...settings,
+        passwordGenerator: {...settings.passwordGenerator, characters}
+      })
+    }
+  }
+
   return (
-    <Modal opened={isOpen} onClose={onClose} title="User Settings">
-      <Stack>
+    <Modal opened={isOpen} onClose={onClose} size={"lg"} title="User Settings">
         <Tabs defaultValue="general" variant="outline">
           <Tabs.List>
             <Tabs.Tab value="general">General</Tabs.Tab>
             <Tabs.Tab value="formatter">Formatter</Tabs.Tab>
             <Tabs.Tab value="uuid-generator">UUID Generator</Tabs.Tab>
+            <Tabs.Tab value="password-generator">Password Generator</Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="general" mt={"md"} mb={"md"}>
@@ -132,17 +146,55 @@ function UserSettingsModal({isOpen, onClose}: UserSettingsModalProps) {
             </Grid>
           </Tabs.Panel>
 
+          <Tabs.Panel mt={"md"} value="password-generator">
+            <Grid>
+              <Grid.Col span={3}>
+                <Text>Length</Text>
+              </Grid.Col>
+              <Grid.Col span={9}>
+                <NumberInput style={{width: '25vw'}} value={settings.passwordGenerator.length} min={minLength} max={maxLength}
+                             data-testid="length-input"
+                             onChange={e => setSettings({...settings, passwordGenerator: {...settings.passwordGenerator, length: e as number}})}/>
+              </Grid.Col>
+              <Grid.Col span={3}>
+                <Text>Included characters</Text>
+              </Grid.Col>
+              <Grid.Col span={9}>
+                <MultiSelect
+                  value={settings.passwordGenerator.characters}
+                  onChange={setPasswordGeneratorCharacters}
+                  style={{width: '25vw'}}
+                  data={[{
+                    label: 'Lowercase letters',
+                    value: LOWER,
+                  },
+                    {
+                      label: 'Uppercase letters',
+                      value: UPPER,
+                    },
+                    {
+                      label: 'Numbers',
+                      value: NUMBERS,
+                    },
+                    {
+                      label: 'Special characters',
+                      value: SPECIAL,
+                    }]}
+                />
+              </Grid.Col>
+            </Grid>
+          </Tabs.Panel>
+
         </Tabs>
         <Grid>
-          <Grid.Col span={6}/>
-          <Grid.Col span={3}>
+          <Grid.Col span={2}>
             <Button variant={"outline"} onClick={onCancel}>Cancel</Button>
           </Grid.Col>
-          <Grid.Col span={3}>
+          <Grid.Col span={2}>
             <Button variant={"filled"} onClick={onSave}>Save</Button>
           </Grid.Col>
+          <Grid.Col span={8}/>
         </Grid>
-      </Stack>
     </Modal>
   )
 }
