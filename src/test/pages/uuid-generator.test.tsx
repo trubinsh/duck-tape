@@ -1,9 +1,10 @@
 import {act, fireEvent, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {UUIDGenerator} from '@/pages/uuid-generator/uuid-generator.ts';
+import {UUIDGenerator} from '@/pages/uuid-generator/uuid-generator.tsx';
 import {MantineProvider} from '@mantine/core';
 import {TitleContext, TitleProvider} from "@/components/title-context";
+import {SettingsProvider} from "@/lib/settings.ts";
 
 const mockPostMessage = vi.fn();
 vi.mock('@/lib/worker-utils', () => ({
@@ -12,7 +13,7 @@ vi.mock('@/lib/worker-utils', () => ({
 
 const TitleDisplay = () => (
   <TitleContext.Consumer>
-    {({ content, title }) => (
+    {({content, title}) => (
       <div>
         <h1>{title}</h1>
         <div data-testid="title-content">{content}</div>
@@ -24,7 +25,7 @@ const TitleDisplay = () => (
 describe('UUIDGenerator', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock scrollIntoView which is missing in JSDOM
     window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
@@ -50,17 +51,19 @@ describe('UUIDGenerator', () => {
   const renderComponent = () => {
     return render(
       <MantineProvider>
-        <TitleProvider>
-          <TitleDisplay />
-          <UUIDGenerator/>
-        </TitleProvider>
+        <SettingsProvider>
+          <TitleProvider>
+            <TitleDisplay/>
+            <UUIDGenerator/>
+          </TitleProvider>
+        </SettingsProvider>
       </MantineProvider>
     );
   };
 
   it('renders initial state', () => {
     renderComponent();
-    expect(screen.getByTestId('version-selector')).toHaveValue('v4');
+    expect(screen.getByTestId('version-selector')).toHaveValue('v7');
     expect(screen.getByTestId('count-input')).toHaveValue('1');
     // Initially one empty UUID field
     expect(screen.getByPlaceholderText('UUID')).toHaveValue('');
@@ -84,33 +87,33 @@ describe('UUIDGenerator', () => {
 
     await waitFor(() => {
       const inputs = screen.getAllByPlaceholderText('UUID');
-      expect(inputs[0]).toHaveValue('mocked-uuid-v4-0');
+      expect(inputs[0]).toHaveValue('mocked-uuid-v7-0');
     });
   });
 
   it('generates UUIDs with selected version', async () => {
     renderComponent();
     const versionSelect = screen.getByTestId('version-selector');
-    
+
     // For Mantine Select, if we can't reliably click the option in JSDOM,
     // we can at least test that it calls the generation with the current value.
     // To test version change, we might need to resort to a more direct approach
     // if userEvent is failing to find the option.
-    
+
     const user = userEvent.setup();
-    
+
     await waitFor(() => {
-        expect(versionSelect).toHaveValue('v4');
+      expect(versionSelect).toHaveValue('v7');
     });
-    
+
     // Try to find the option by text first if findByRole is failing
     await user.click(versionSelect);
     const option = await screen.findByText('v7');
     await user.click(option);
-    
+
     await waitFor(() => {
-        expect(versionSelect).toHaveValue('v7');
-    }, { timeout: 2000 });
+      expect(versionSelect).toHaveValue('v7');
+    }, {timeout: 2000});
 
     const generateBtn = screen.getByRole('button', {name: /generate/i});
     await user.click(generateBtn);
@@ -118,7 +121,7 @@ describe('UUIDGenerator', () => {
     await waitFor(() => {
       const inputs = screen.getAllByPlaceholderText('UUID');
       expect(inputs[0]).toHaveValue('mocked-uuid-v7-0');
-    }, { timeout: 2000 });
+    }, {timeout: 2000});
   });
 
   it('copies a single UUID to clipboard', async () => {
@@ -127,7 +130,7 @@ describe('UUIDGenerator', () => {
     fireEvent.click(generateBtn);
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('UUID')).toHaveValue('mocked-uuid-v4-0');
+      expect(screen.getByPlaceholderText('UUID')).toHaveValue('mocked-uuid-v7-0');
     });
 
     const copyBtn = screen.getByLabelText('Copy UUID');
@@ -135,7 +138,7 @@ describe('UUIDGenerator', () => {
       fireEvent.click(copyBtn);
     });
 
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('mocked-uuid-v4-0');
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('mocked-uuid-v7-0');
   });
 
   it('copies all UUIDs to clipboard', async () => {
@@ -151,8 +154,8 @@ describe('UUIDGenerator', () => {
     await waitFor(() => {
       const inputs = screen.getAllByPlaceholderText('UUID');
       expect(inputs).toHaveLength(2);
-      expect(inputs[0]).toHaveValue('mocked-uuid-v4-0');
-      expect(inputs[1]).toHaveValue('mocked-uuid-v4-1');
+      expect(inputs[0]).toHaveValue('mocked-uuid-v7-0');
+      expect(inputs[1]).toHaveValue('mocked-uuid-v7-1');
     });
 
     const copyAllBtn = screen.getByLabelText('Copy all UUIDs');
@@ -160,7 +163,7 @@ describe('UUIDGenerator', () => {
       fireEvent.click(copyAllBtn);
     });
 
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('mocked-uuid-v4-0\nmocked-uuid-v4-1');
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('mocked-uuid-v7-0\nmocked-uuid-v7-1');
   });
 
   it('handles generation error', async () => {

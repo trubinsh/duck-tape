@@ -1,8 +1,11 @@
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {PasswordGenerator} from '@/pages/password-generator/password-generator.tsx';
+import {
+  PasswordGenerator
+} from '@/pages/password-generator/password-generator.tsx';
 import {MantineProvider} from '@mantine/core';
 import {TitleContext, TitleProvider} from "@/components/title-context";
+import {SettingsProvider} from "@/lib/settings.ts";
 
 const mockPostMessage = vi.fn();
 vi.mock('@/lib/worker-utils', () => ({
@@ -11,7 +14,7 @@ vi.mock('@/lib/worker-utils', () => ({
 
 const TitleDisplay = () => (
   <TitleContext.Consumer>
-    {({ content, title }) => (
+    {({content, title}) => (
       <div>
         <h1>{title}</h1>
         <div data-testid="title-content">{content}</div>
@@ -48,10 +51,12 @@ describe('PasswordGenerator', () => {
   const renderComponent = () => {
     return render(
       <MantineProvider>
-        <TitleProvider>
-          <TitleDisplay />
-          <PasswordGenerator/>
-        </TitleProvider>
+        <SettingsProvider>
+          <TitleProvider>
+            <TitleDisplay/>
+            <PasswordGenerator/>
+          </TitleProvider>
+        </SettingsProvider>
       </MantineProvider>
     );
   };

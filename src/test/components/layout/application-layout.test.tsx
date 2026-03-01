@@ -5,6 +5,7 @@ import {MemoryRouter} from 'react-router-dom';
 import {ApplicationLayout} from '@/components/layout/application-layout.tsx';
 import {describe, expect, it, vi} from 'vitest';
 import type {ReactNode} from "react";
+import {SettingsProvider} from "@/lib/settings.ts";
 
 // Mocking scrollIntoView as it's not implemented in jsdom
 Element.prototype.scrollIntoView = vi.fn();
@@ -12,9 +13,11 @@ Element.prototype.scrollIntoView = vi.fn();
 function TestWrapper({children}: { children: ReactNode }) {
   return (
     <MantineProvider>
-      <MemoryRouter>
-        {children}
-      </MemoryRouter>
+      <SettingsProvider>
+        <MemoryRouter>
+          {children}
+        </MemoryRouter>
+      </SettingsProvider>
     </MantineProvider>
   );
 }
