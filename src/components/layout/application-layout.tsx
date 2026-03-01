@@ -17,7 +17,7 @@ import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {isToolGroup, tools, useTitle} from "@/lib/utils.ts";
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {loadSettings, saveSettings} from "@/lib/settings.ts";
+import {useSettings} from "@/lib/settings.ts";
 import {SearchAutocomplete} from "@/components/search-autocomplete.tsx";
 import {useDisclosure} from "@mantine/hooks";
 import {UserSettingsModal} from "@/components/user-settings.tsx";
@@ -25,7 +25,7 @@ import {UserSettingsModal} from "@/components/user-settings.tsx";
 export function ApplicationLayout({children}: {
   children: React.ReactNode
 }) {
-  const settings = loadSettings();
+  const {settings, updateSettings} = useSettings();
   const location = useLocation();
   const navigate = useNavigate();
   const [isInitialized, setIsInitialized] = useState(false);
@@ -42,9 +42,9 @@ export function ApplicationLayout({children}: {
 
   useEffect(() => {
     if (isInitialized) {
-      saveSettings({lastPage: location.pathname});
+      updateSettings({lastPage: location.pathname});
     }
-  }, [location.pathname, isInitialized]);
+  }, [location.pathname, isInitialized, updateSettings]);
 
   return (
     <>
@@ -119,7 +119,7 @@ export function ApplicationLayout({children}: {
                 onClick={open}
                 variant="default"
                 size="lg"
-                aria-label="Toggle color scheme"
+                aria-label="Open settings"
               >
                 <IconSettings/>
               </ActionIcon>
