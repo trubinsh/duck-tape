@@ -1,4 +1,9 @@
 import React, { createContext, useContext, useCallback, useState } from 'react';
+import {
+  LOWER,
+  NUMBERS,
+  UPPER
+} from "@/pages/password-generator/password-generator.ts";
 
 export const SETTINGS_KEY = 'dev-tools-settings';
 
@@ -14,6 +19,10 @@ export interface UserSettings {
   uuidGenerator: {
     version: string;
     count: number;
+  };
+  passwordGenerator: {
+    characters: string[];
+    length: number;
   }
 }
 
@@ -29,6 +38,10 @@ const DEFAULT_SETTINGS: UserSettings = {
   uuidGenerator: {
     version: 'v7',
     count: 1,
+  },
+  passwordGenerator: {
+    characters: [UPPER, LOWER, NUMBERS],
+    length: 16,
   },
 };
 
