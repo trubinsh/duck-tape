@@ -9,11 +9,14 @@ import {
   useMantineColorScheme
 } from "@mantine/core";
 import {IconMoon, IconSun} from "@tabler/icons-react";
-import {formatterIndentations, useBrowser} from "@/lib/utils.ts";
+import {useBrowser} from "@/lib/utils.ts";
 import {useClipboardAwareContext} from "@/lib/clipboard-aware-context.ts";
 import {useSettings, type UserSettings} from "@/lib/settings.ts";
 import {useEffect, useState} from "react";
 import {maxUuidCount, uuidVersions} from "@/pages/uuid-generator/uuid-generator.ts";
+import {
+  formatterIndentations
+} from "@/pages/structure-formatter/structure-formatter.ts";
 
 interface UserSettingsModalProps {
   isOpen: boolean;

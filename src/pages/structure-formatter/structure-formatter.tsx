@@ -4,7 +4,7 @@ import {xml} from '@codemirror/lang-xml';
 import {html} from '@codemirror/lang-html';
 import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "react-router-dom";
-import {type Format, formatterIndentations} from "@/lib/utils.ts";
+import {type Format} from "@/lib/utils.ts";
 import {CodeMirrorCard} from "@/components/code-mirror-card.tsx";
 import {Button, Grid, NativeSelect, useMantineColorScheme} from "@mantine/core";
 import {indentString} from "@/lib/formatter-utils.ts";
@@ -12,6 +12,9 @@ import {notifications} from "@mantine/notifications";
 import {IconX} from "@tabler/icons-react";
 import {TitleContent} from "@/components/title-context.tsx";
 import {useSettings} from "@/lib/settings.ts";
+import {
+  formatterIndentations
+} from "@/pages/structure-formatter/structure-formatter.ts";
 
 export default function StructureFormatter() {
   const [params] = useSearchParams()

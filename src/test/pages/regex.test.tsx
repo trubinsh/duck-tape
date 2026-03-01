@@ -1,6 +1,6 @@
 import {render, screen, fireEvent} from '@testing-library/react';
 import {describe, it, expect, vi} from 'vitest';
-import {RegexPage} from '@/pages/regex';
+import {RegexPage} from '@/pages/regex/regex.tsx';
 import {MantineProvider} from '@mantine/core';
 
 // Mock CodeMirror since it's hard to test in JSDOM

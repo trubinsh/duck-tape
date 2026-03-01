@@ -12,13 +12,13 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {ApplicationLayout} from "@/components/layout/application-layout";
 import {SettingsProvider, useSettings} from "@/lib/settings.ts";
 import {ClipboardProvider} from "@/components/clipboard-provider.tsx";
-import StructureFormatter from "@/pages/structure-formatter.tsx";
-import {Encoder} from "@/pages/encoder.tsx";
-import DiffViewer from "@/pages/diff-viewer.tsx";
-import {PasswordGenerator} from "@/pages/password-generator.tsx";
+import StructureFormatter from "@/pages/structure-formatter/structure-formatter.tsx";
+import {Encoder} from "@/pages/encoder/encoder.tsx";
+import DiffViewer from "@/pages/diff-viewer/diff-viewer.tsx";
+import {PasswordGenerator} from "@/pages/password-generator/password-generator.tsx";
 import {UUIDGenerator} from "@/pages/uuid-generator/uuid-generator.tsx";
-import {TimestampConverter} from "@/pages/timestamp-converter.tsx";
-import {RegexPage} from "@/pages/regex.tsx";
+import {TimestampConverter} from "@/pages/timestamp-converter/timestamp-converter.tsx";
+import {RegexPage} from "@/pages/regex/regex.tsx";
 import {
   CodeHighlightAdapterProvider,
   createShikiAdapter
