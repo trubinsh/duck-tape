@@ -1,7 +1,7 @@
 import {
   ActionIcon,
   Button, Grid,
-  Modal, NativeSelect,
+  Modal, NativeSelect, NumberInput,
   Stack,
   Switch,
   Tabs, Text,
@@ -13,6 +13,7 @@ import {formatterIndentations, useBrowser} from "@/lib/utils.ts";
 import {useClipboardAwareContext} from "@/lib/clipboard-aware-context.ts";
 import {useSettings, type UserSettings} from "@/lib/settings.ts";
 import {useEffect, useState} from "react";
+import {maxUuidCount, uuidVersions} from "@/pages/uuid-generator/uuid-generator.ts";
 
 interface UserSettingsModalProps {
   isOpen: boolean;
@@ -77,6 +78,7 @@ function UserSettingsModal({isOpen, onClose}: UserSettingsModalProps) {
           <Tabs.List>
             <Tabs.Tab value="general">General</Tabs.Tab>
             <Tabs.Tab value="formatter">Formatter</Tabs.Tab>
+            <Tabs.Tab value="uuid-generator">UUID Generator</Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="general" mt={"md"} mb={"md"}>
@@ -104,6 +106,25 @@ function UserSettingsModal({isOpen, onClose}: UserSettingsModalProps) {
               </Grid.Col>
               <Grid.Col span={7}>
                 <NativeSelect value={settings.formatter.indentSize} data={formatterIndentations} onChange={(e) => setSettings({...settings, formatter: {indentSize: parseInt(e.currentTarget.value)}})}/>
+              </Grid.Col>
+            </Grid>
+          </Tabs.Panel>
+
+          <Tabs.Panel mt={"md"} value="uuid-generator">
+            <Grid>
+              <Grid.Col span={5}>
+                <Text>UUID Version</Text>
+              </Grid.Col>
+              <Grid.Col span={7}>
+                <NativeSelect value={settings.uuidGenerator.version} data={uuidVersions} onChange={(e) => setSettings({...settings, uuidGenerator: {...settings.uuidGenerator, version: e.currentTarget.value}})}/>
+              </Grid.Col>
+              <Grid.Col span={5}>
+                <Text>Count</Text>
+              </Grid.Col>
+              <Grid.Col span={7}>
+                <NumberInput value={settings.uuidGenerator.count} min={1} max={maxUuidCount}
+                             data-testid="count-input"
+                             onChange={e => setSettings({...settings, uuidGenerator: {...settings.uuidGenerator, count: e as number}})}/>
               </Grid.Col>
             </Grid>
           </Tabs.Panel>
