@@ -1,22 +1,61 @@
+import React, { createContext, useContext, useCallback, useState } from 'react';
+import {
+  LOWER,
+  NUMBERS,
+  UPPER
+} from "@/pages/password-generator/password-generator.ts";
+
 export const SETTINGS_KEY = 'dev-tools-settings';
 
 export interface UserSettings {
   lastPage: string;
-  theme: 'light' | 'dark' | 'auto';
-  smartSearchEnabled: boolean;
+  general: {
+    theme: 'light' | 'dark';
+    smartSearchEnabled: boolean;
+  };
+  formatter: {
+    indentSize: number;
+  };
+  uuidGenerator: {
+    version: string;
+    count: number;
+  };
+  passwordGenerator: {
+    characters: string[];
+    length: number;
+  }
 }
 
 const DEFAULT_SETTINGS: UserSettings = {
   lastPage: '/',
-  theme: 'dark',
-  smartSearchEnabled: false
+  general: {
+    theme: 'light',
+    smartSearchEnabled: true,
+  },
+  formatter: {
+    indentSize: 2,
+  },
+  uuidGenerator: {
+    version: 'v7',
+    count: 1,
+  },
+  passwordGenerator: {
+    characters: [UPPER, LOWER, NUMBERS],
+    length: 16,
+  },
 };
 
-export function loadSettings(): UserSettings {
+function loadSettingsInternal(): UserSettings {
   try {
     const saved = localStorage.getItem(SETTINGS_KEY);
     if (saved) {
-      return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
+      const parsed = JSON.parse(saved);
+      return {
+        ...DEFAULT_SETTINGS,
+        ...parsed,
+        general: { ...DEFAULT_SETTINGS.general, ...parsed.general },
+        formatter: { ...DEFAULT_SETTINGS.formatter, ...parsed.formatter },
+      };
     }
   } catch (e) {
     console.error('Failed to load settings', e);
@@ -24,12 +63,61 @@ export function loadSettings(): UserSettings {
   return DEFAULT_SETTINGS;
 }
 
-export function saveSettings(settings: Partial<UserSettings>) {
+function saveSettingsInternal(settings: UserSettings) {
   try {
-    const current = loadSettings();
-    const updated = { ...current, ...settings };
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(updated));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
   } catch (e) {
     console.error('Failed to save settings', e);
   }
+}
+
+interface SettingsContextType {
+  settings: UserSettings;
+  updateSettings: (newSettings: Partial<UserSettings>) => void;
+}
+
+const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
+
+export function SettingsProvider({ children }: { children: React.ReactNode }) {
+  const [settings, setSettings] = useState<UserSettings>(loadSettingsInternal());
+
+  const updateSettings = useCallback((newSettings: Partial<UserSettings>) => {
+    setSettings((prev) => {
+      const updated = {
+        ...prev,
+        ...newSettings,
+        general: newSettings.general ? { ...prev.general, ...newSettings.general } : prev.general,
+        formatter: newSettings.formatter ? { ...prev.formatter, ...newSettings.formatter } : prev.formatter,
+      };
+      saveSettingsInternal(updated);
+      return updated;
+    });
+  }, []);
+
+  return React.createElement(
+    SettingsContext.Provider,
+    { value: { settings, updateSettings } },
+    children
+  );
+}
+
+export function useSettings() {
+  const context = useContext(SettingsContext);
+  if (context === undefined) {
+    throw new Error('useSettings must be used within a SettingsProvider');
+  }
+  return context;
+}
+
+// Keep these for backward compatibility during migration
+export const loadSettings = loadSettingsInternal;
+export function saveSettings(settings: Partial<UserSettings>) {
+  const current = loadSettingsInternal();
+  const updated = {
+    ...current,
+    ...settings,
+    general: settings.general ? { ...current.general, ...settings.general } : current.general,
+    formatter: settings.formatter ? { ...current.formatter, ...settings.formatter } : current.formatter,
+  };
+  saveSettingsInternal(updated);
 }

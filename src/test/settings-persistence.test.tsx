@@ -4,7 +4,7 @@ import {type MantineColorScheme, MantineProvider} from '@mantine/core';
 import {type InitialEntry, MemoryRouter, Route, Routes} from 'react-router-dom';
 import {ApplicationLayout} from '../components/layout/application-layout.tsx';
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
-import {SETTINGS_KEY} from '../lib/settings.ts';
+import {SETTINGS_KEY, SettingsProvider} from '../lib/settings.ts';
 import type {ReactNode} from "react";
 
 // Mocking scrollIntoView as it's not implemented in jsdom
@@ -20,11 +20,13 @@ function TestWrapper({
   defaultColorScheme?: MantineColorScheme | undefined
 }) {
   return (
-    <MantineProvider defaultColorScheme={defaultColorScheme}>
-      <MemoryRouter initialEntries={initialEntries}>
-        {children}
-      </MemoryRouter>
-    </MantineProvider>
+    <SettingsProvider>
+      <MantineProvider defaultColorScheme={defaultColorScheme}>
+        <MemoryRouter initialEntries={initialEntries}>
+          {children}
+        </MemoryRouter>
+      </MantineProvider>
+    </SettingsProvider>
   );
 }
 
@@ -51,7 +53,9 @@ describe('ApplicationLayout Settings Persistence', () => {
     );
 
     // Should initially save '/'
-    expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({lastPage: '/'});
+    await waitFor(() => {
+      expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({lastPage: '/'});
+    });
 
     // Click on PasswordGenerator link in the navbar
     const generatorNavLink = screen.getAllByText('JSON Formatter').find(el => el.closest('a'));
@@ -97,16 +101,33 @@ describe('ApplicationLayout Settings Persistence', () => {
       </TestWrapper>
     );
 
-    const themeToggle = screen.getByLabelText('Toggle color scheme');
+    const settingsButton = screen.getByLabelText('Open settings');
+    await userEvent.click(settingsButton);
 
-    // Initial theme might be 'dark' (as per default)
+    const themeToggle = await screen.findByLabelText('Toggle color scheme');
+    if (!themeToggle) throw new Error('Theme toggle not found');
+
     // Click to toggle to light
     await userEvent.click(themeToggle);
 
-    expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({theme: 'light'});
+    // Click Save
+    await userEvent.click(screen.getByText('Save'));
 
-    // Click again to toggle back to dark
-    await userEvent.click(themeToggle);
-    expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({theme: 'dark'});
+    await waitFor(() => {
+      expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({
+        general: { theme: 'light' }
+      });
+    });
+
+    await userEvent.click(settingsButton);
+    const themeToggle2 = await screen.findByLabelText('Toggle color scheme');
+    await userEvent.click(themeToggle2!);
+    await userEvent.click(screen.getByText('Save'));
+
+    await waitFor(() => {
+      expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({
+        general: { theme: 'dark' }
+      });
+    });
   });
 });

@@ -10,15 +10,15 @@ import {
 import {Notifications} from '@mantine/notifications';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {ApplicationLayout} from "@/components/layout/application-layout";
-import {loadSettings} from "@/lib/settings.ts";
+import {SettingsProvider, useSettings} from "@/lib/settings.ts";
 import {ClipboardProvider} from "@/components/clipboard-provider.tsx";
-import StructureFormatter from "@/pages/structure-formatter.tsx";
-import {Encoder} from "@/pages/encoder.tsx";
-import DiffViewer from "@/pages/diff-viewer.tsx";
-import {PasswordGenerator} from "@/pages/password-generator.tsx";
-import {UUIDGenerator} from "@/pages/uuid-generator.tsx";
-import {TimestampConverter} from "@/pages/timestamp-converter.tsx";
-import {RegexPage} from "@/pages/regex.tsx";
+import StructureFormatter from "@/pages/structure-formatter/structure-formatter.tsx";
+import {Encoder} from "@/pages/encoder/encoder.tsx";
+import DiffViewer from "@/pages/diff-viewer/diff-viewer.tsx";
+import {PasswordGenerator} from "@/pages/password-generator/password-generator.tsx";
+import {UUIDGenerator} from "@/pages/uuid-generator/uuid-generator.tsx";
+import {TimestampConverter} from "@/pages/timestamp-converter/timestamp-converter.tsx";
+import {RegexPage} from "@/pages/regex/regex.tsx";
 import {
   CodeHighlightAdapterProvider,
   createShikiAdapter
@@ -54,13 +54,13 @@ async function loadShiki() {
 
 const shikiAdapter = createShikiAdapter(loadShiki);
 
-export default function App() {
-  const settings = loadSettings();
+function AppContent({shikiAdapter}: {shikiAdapter: any}) {
+  const {settings} = useSettings();
 
   return (
     <>
-      <ColorSchemeScript defaultColorScheme={settings.theme}/>
-      <MantineProvider theme={theme} defaultColorScheme={settings.theme}>
+      <ColorSchemeScript defaultColorScheme={settings.general.theme}/>
+      <MantineProvider theme={theme} defaultColorScheme={settings.general.theme}>
         <Notifications/>
         <CodeHighlightAdapterProvider adapter={shikiAdapter}>
           <BrowserRouter>
@@ -88,5 +88,13 @@ export default function App() {
         </CodeHighlightAdapterProvider>
       </MantineProvider>
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <SettingsProvider>
+      <AppContent shikiAdapter={shikiAdapter} />
+    </SettingsProvider>
   );
 }

@@ -1,6 +1,6 @@
 import {render, screen} from '@testing-library/react';
 import {describe, expect, it, vi} from 'vitest';
-import DiffViewer from '@/pages/diff-viewer';
+import DiffViewer from '@/pages/diff-viewer/diff-viewer.tsx';
 import {MantineProvider} from '@mantine/core';
 
 // Mock @codemirror/merge
