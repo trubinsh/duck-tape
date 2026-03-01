@@ -114,16 +114,24 @@ export function ApplicationLayout({children}: {
           </AppShell.Section>
           <AppShell.Section>
             <Divider mb={"md"} mt={"md"}/>
-            <Group gap={"md"}>
-              <ActionIcon
-                onClick={open}
-                variant="default"
-                size="lg"
-                aria-label="Open settings"
-              >
-                <IconSettings/>
-              </ActionIcon>
-            </Group>
+            <Grid>
+              <Grid.Col span={2}>
+                <ActionIcon
+                  onClick={open}
+                  variant="default"
+                  size="lg"
+                  aria-label="Open settings"
+                >
+                  <IconSettings/>
+                </ActionIcon>
+              </Grid.Col>
+              <Grid.Col span={6}/>
+              <Grid.Col span={4}>
+                <Text>
+                  v{import.meta.env.VITE_APP_VERSION}
+                </Text>
+              </Grid.Col>
+            </Grid>
           </AppShell.Section>
         </AppShell.Navbar>
 

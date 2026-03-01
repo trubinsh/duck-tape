@@ -1,0 +1,36 @@
+name: Version Update
+on:
+  push:
+    branches: [main]
+
+jobs:
+  update-version:
+    runs-on: self-hosted
+    if: >
+      github.event.head_commit.message != 'chore(version): increment to next snapshot'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+          cache: 'npm'
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Increment version
+        run: npm version prerelease --no-git-tag-version
+
+      - name: Commit and push changes
+        run: |
+          git add package.json package-lock.json
+          git commit -m "chore(version): increment to next snapshot"
+          git push origin main
