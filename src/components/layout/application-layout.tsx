@@ -11,6 +11,7 @@ import {
   ScrollArea,
   Text,
   Title,
+  UnstyledButton,
 } from '@mantine/core';
 import {IconBrandGithub, IconSettings} from '@tabler/icons-react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
@@ -33,12 +34,12 @@ export function ApplicationLayout({children}: {
   const [opened, {open, close}] = useDisclosure(false);
 
   useEffect(() => {
-    if (settings.lastPage && settings.lastPage !== location.pathname && location.pathname === '/') {
+    if (settings.lastPage && settings.lastPage !== location.pathname && location.pathname === '/' && !location.hash.includes('no-redirect')) {
       navigate(settings.lastPage, {replace: true});
     }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsInitialized(true);
-  }, [location.pathname, navigate, settings.lastPage]);
+  }, [location.pathname, navigate, settings.lastPage, location.hash]);
 
   useEffect(() => {
     if (isInitialized) {
@@ -68,11 +69,13 @@ export function ApplicationLayout({children}: {
       >
         <AppShell.Navbar p="md">
           <AppShell.Section>
-            <Text gradient={{from: 'grey', to: 'orange', deg: 90}}
-                  variant={'gradient'} size={'xl'}>
-              <Image src={svgLogo} w={75} h={60}/>
-              DuckTape
-            </Text>
+            <UnstyledButton component={Link} to="/#no-redirect">
+              <Text gradient={{from: 'grey', to: 'orange', deg: 90}}
+                    variant={'gradient'} size={'xl'}>
+                <Image src={svgLogo} w={75} h={60}/>
+                DuckTape
+              </Text>
+            </UnstyledButton>
           </AppShell.Section>
           <Divider mt={"md"} mb={"md"}/>
           <AppShell.Section>
@@ -141,18 +144,22 @@ export function ApplicationLayout({children}: {
         </AppShell.Navbar>
 
         <AppShell.Main style={{display: 'flex', flexDirection: 'column'}}>
-          <Divider/>
-          <Grid m={"md"}>
-            <Grid.Col span={3}>
-              <Title order={4}>{title}</Title>
-            </Grid.Col>
-            <Grid.Col span={9}>
-              <Group justify={"flex-end"}>
-                {titleContent}
-              </Group>
-            </Grid.Col>
-          </Grid>
-          <Divider/>
+          { (title || titleContent) && (
+            <>
+              <Divider/>
+              <Grid m={"md"}>
+                <Grid.Col span={3}>
+                  <Title order={4}>{title}</Title>
+                </Grid.Col>
+                <Grid.Col span={9}>
+                  <Group justify={"flex-end"}>
+                    {titleContent}
+                  </Group>
+                </Grid.Col>
+              </Grid>
+              <Divider/>
+            </>
+          )}
           <Container fluid mt={"xs"} ml={0} mr="auto" style={{
             width: '85%',
             display: 'flex',
