@@ -12,7 +12,7 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import {IconSettings} from '@tabler/icons-react';
+import {IconBrandGithub, IconSettings} from '@tabler/icons-react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {isToolGroup, tools, useTitle} from "@/lib/utils.ts";
 import * as React from "react";
@@ -123,9 +123,19 @@ export function ApplicationLayout({children}: {
               >
                 <IconSettings/>
               </ActionIcon>
-              <Text>
-                v{import.meta.env.VITE_APP_VERSION}
-              </Text>
+              <Grid align={"flex-end"}>
+                <Grid.Col span={4}>
+                  <ActionIcon me={"xs"}  size={"lg"} variant={"default"} component={Link}
+                              to={"https://github.com/trubinsh/duck-tape"}>
+                    <IconBrandGithub/>
+                  </ActionIcon>
+                </Grid.Col>
+                <Grid.Col span={8}>
+                  <Text size={"xs"}>
+                    v{import.meta.env.VITE_APP_VERSION}
+                  </Text>
+                </Grid.Col>
+              </Grid>
             </Group>
           </AppShell.Section>
         </AppShell.Navbar>
