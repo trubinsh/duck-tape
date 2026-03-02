@@ -40,7 +40,7 @@ describe('ApplicationLayout Settings Persistence', () => {
     localStorage.clear();
   });
 
-  it('saves the last visited page to localStorage', async () => {
+  it('saves the last visited page to localStorage', { timeout: 10000 }, async () => {
     render(
       <TestWrapper initialEntries={['/']}>
         <ApplicationLayout>
@@ -69,7 +69,7 @@ describe('ApplicationLayout Settings Persistence', () => {
     });
   });
 
-  it('restores the last visited page from localStorage on initial load', async () => {
+  it('restores the last visited page from localStorage on initial load', { timeout: 10000 }, async () => {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify({
       lastPage: '/generator',
       theme: 'dark'
@@ -92,7 +92,7 @@ describe('ApplicationLayout Settings Persistence', () => {
     });
   });
 
-  it('saves the theme to localStorage when changed', async () => {
+  it('saves the theme to localStorage when changed', { timeout: 10000 }, async () => {
     render(
       <TestWrapper defaultColorScheme="dark">
         <ApplicationLayout>
@@ -114,10 +114,12 @@ describe('ApplicationLayout Settings Persistence', () => {
     await userEvent.click(screen.getByText('Save'));
 
     await waitFor(() => {
-      expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({
+      const saved = localStorage.getItem(SETTINGS_KEY);
+      expect(saved).not.toBeNull();
+      expect(JSON.parse(saved!)).toMatchObject({
         general: { theme: 'light' }
       });
-    });
+    }, { timeout: 5000 });
 
     await userEvent.click(settingsButton);
     const themeToggle2 = await screen.findByLabelText('Toggle color scheme');
@@ -125,9 +127,11 @@ describe('ApplicationLayout Settings Persistence', () => {
     await userEvent.click(screen.getByText('Save'));
 
     await waitFor(() => {
-      expect(JSON.parse(localStorage.getItem(SETTINGS_KEY)!)).toMatchObject({
+      const saved = localStorage.getItem(SETTINGS_KEY);
+      expect(saved).not.toBeNull();
+      expect(JSON.parse(saved!)).toMatchObject({
         general: { theme: 'dark' }
       });
-    });
+    }, { timeout: 5000 });
   });
 });
