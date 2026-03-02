@@ -4,8 +4,7 @@ import '@mantine/code-highlight/styles.css';
 import {
   ColorSchemeScript,
   createTheme,
-  MantineProvider,
-  Text
+  MantineProvider
 } from '@mantine/core';
 import {Notifications} from '@mantine/notifications';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
@@ -19,6 +18,7 @@ import {PasswordGenerator} from "@/pages/password-generator/password-generator.t
 import {UUIDGenerator} from "@/pages/uuid-generator/uuid-generator.tsx";
 import {TimestampConverter} from "@/pages/timestamp-converter/timestamp-converter.tsx";
 import {RegexPage} from "@/pages/regex/regex.tsx";
+import {Home} from "@/pages/home/home.tsx";
 import {
   CodeHighlightAdapterProvider,
   createShikiAdapter
@@ -68,9 +68,7 @@ function AppContent({shikiAdapter}: {shikiAdapter: any}) {
               <TitleProvider>
                 <ApplicationLayout>
                   <Routes>
-                    <Route path="/" element={
-                      <Text size="xl" fw={700} mb="md">Main Content</Text>
-                    }/>
+                    <Route path="/" element={<Home/>}/>
                     <Route path="/formatter" element={<StructureFormatter/>}/>
                     <Route path="/encoder" element={<Encoder/>}/>
                     <Route path="/diff-viewer" element={<DiffViewer/>}/>
