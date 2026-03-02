@@ -1,73 +1,83 @@
-# React + TypeScript + Vite
+# DuckTape - Tools for Developers
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+DuckTape is a comprehensive, client-side application designed to provide essential data transformation, generation, and validation tools for developers. Built with a focus on speed and privacy, all processing is performed locally in your browser—no data is ever sent to a server.
 
-Currently, two official plugins are available:
+## 🛠️ Supported Tools
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 🏗️ Structure Formatter
+Easily format and minify structured data with adjustable indentation.
+- **Supported Formats:** JSON, XML, HTML.
+- **Features:** Instant formatting/minification, syntax highlighting, and copy-to-clipboard.
 
-## React Compiler
+### 🔐 Encoder / Decoder
+Quickly convert data between different encoding formats.
+- **Base64:** Encode and decode text to/from Base64.
+- **URL:** Safe URL encoding and decoding for parameters.
+- **JWT Decoder:** Inspect the header and payload of JSON Web Tokens.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 📄 Diff Viewer
+Compare two pieces of text or code side-by-side.
+- **Features:** Syntax highlighting for JSON, XML, and HTML, and clear visual change markers.
 
-## Expanding the ESLint configuration
+### 🧪 Regex Tester
+Test and debug regular expressions in real-time.
+- **Features:** Instant matching, visual highlighting of matches in test strings, and error reporting for invalid patterns.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🕒 Timestamp Converter
+Convert between Unix Epoch timestamps and human-readable dates.
+- **Epoch to Date:** Get local and UTC representations of a timestamp.
+- **Date to Epoch:** Select a date and time to get its corresponding Unix timestamp.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 🔑 Password Generator
+Generate secure, random passwords.
+- **Customizable:** Adjust length and include/exclude lowercase, uppercase, numbers, and special characters.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 🆔 UUID Generator
+Generate unique identifiers for your projects.
+- **Versions:** Support for v1, v3, v4, v5, v6, and v7.
+- **Bulk Generation:** Generate multiple UUIDs at once.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🚀 Tech Stack
+- **Framework:** [React 19+](https://react.dev/) (Vite)
+- **Component Library:** [Mantine 8.3](https://mantine.dev/)
+- **Icons:** [Tabler Icons](https://tabler.io/icons)
+- **Editor:** [CodeMirror 6](https://codemirror.net/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+
+## 🛠️ Getting Started
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (latest LTS recommended)
+- [npm](https://www.npmjs.com/)
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/trubinsh/duck-tape.git
+   cd duck-tape
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Development
+Start the development server:
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Build
+Build the application for production:
+```bash
+npm run build
 ```
+
+## 📂 Project Structure
+- `src/pages/`: Individual tool implementations.
+- `src/components/`: Reusable UI components.
+- `src/lib/`: Shared utility functions and worker logic.
+- `src/test/`: Unit and integration tests.
+
+## ⚖️ License
+This project is licensed under the Apache V2.0 License - see the `LICENSE` file for details.
