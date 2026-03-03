@@ -1,4 +1,4 @@
-import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {act, fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 import {
   PasswordGenerator
@@ -107,12 +107,17 @@ describe('PasswordGenerator', () => {
     });
 
     const copyBtn = screen.getByLabelText('Copy password');
-    fireEvent.click(copyBtn);
+    await act(async () => {
+      fireEvent.click(copyBtn);
+    });
 
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(password);
+    await waitFor(() => {
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(password);
+    });
   });
 
   it('handles worker error', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     mockPostMessage.mockRejectedValue(new Error('Generation failed'));
 
     renderComponent();
