@@ -14,7 +14,11 @@ import {
   Tooltip,
   UnstyledButton,
 } from '@mantine/core';
-import {IconBrandGithub, IconInfoCircle, IconSettings} from '@tabler/icons-react';
+import {
+  IconBrandGithub,
+  IconInfoCircle,
+  IconSettings
+} from '@tabler/icons-react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {isToolGroup, tools, useTitle} from "@/lib/utils.ts";
 import * as React from "react";
@@ -119,24 +123,33 @@ export function ApplicationLayout({children}: {
           <AppShell.Section>
             <Divider mb={"md"} mt={"md"}/>
             <Group justify="space-between">
-              <ActionIcon
-                onClick={open}
-                variant="default"
-                size="lg"
-                aria-label="Open settings"
-              >
-                <IconSettings/>
-              </ActionIcon>
-              <Grid align={"flex-end"}>
-                <Grid.Col span={4}>
-                  <ActionIcon me={"xs"}  size={"lg"} variant={"default"} component={Link}
+              <Group gap="xs">
+                <Tooltip label={"Settings"}>
+                  <ActionIcon
+                    onClick={open}
+                    variant="default"
+                    size="lg"
+                    aria-label="Open settings"
+                  >
+                    <IconSettings/>
+                  </ActionIcon>
+                </Tooltip>
+                <Tooltip label={"GitHub"}>
+                  <ActionIcon size={"lg"} variant={"default"} component={Link}
                               to={"https://github.com/trubinsh/duck-tape"}>
                     <IconBrandGithub/>
                   </ActionIcon>
+                </Tooltip>
+              </Group>
+              <Grid align={"flex-end"}>
+                <Grid.Col span={4}>
                 </Grid.Col>
                 <Grid.Col span={8}>
-                  <Text size={"xs"}>
+                  <Text size={"xs"} c={"dimmed"}>
                     v{import.meta.env.VITE_APP_VERSION}
+                  </Text>
+                  <Text size={"xs"} c={"dimmed"}>
+                    © {new Date().getFullYear()} DuckTape
                   </Text>
                 </Grid.Col>
               </Grid>
@@ -145,7 +158,7 @@ export function ApplicationLayout({children}: {
         </AppShell.Navbar>
 
         <AppShell.Main style={{display: 'flex', flexDirection: 'column'}}>
-          { (title || titleContent) && (
+          {(title || titleContent) && (
             <>
               <Divider/>
               <Grid m={"md"}>
@@ -153,9 +166,13 @@ export function ApplicationLayout({children}: {
                   <Group gap="xs">
                     <Title order={4}>{title}</Title>
                     {description && (
-                      <Tooltip label={description} multiline w={300} withArrow transitionProps={{ transition: 'fade', duration: 200 }}>
+                      <Tooltip label={description} multiline w={300} withArrow
+                               transitionProps={{
+                                 transition: 'fade',
+                                 duration: 200
+                               }}>
                         <ActionIcon variant="subtle" color="gray" size="sm">
-                          <IconInfoCircle size={18} />
+                          <IconInfoCircle size={18}/>
                         </ActionIcon>
                       </Tooltip>
                     )}
