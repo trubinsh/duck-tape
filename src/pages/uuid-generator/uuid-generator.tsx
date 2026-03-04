@@ -49,7 +49,10 @@ function UUIDGenerator() {
 
   return (
     <>
-      <TitleContent title={"UUID Generator"}>
+      <TitleContent
+        title={"UUID Generator"}
+        description={"Generate unique identifiers (UUID/GUID) for your projects. Supports version 4 and bulk generation."}
+      >
         <Button onClick={() => generateUuid(version)}>Generate</Button>
         <Tooltip label={"Version"}>
           <Select data={uuidVersions}

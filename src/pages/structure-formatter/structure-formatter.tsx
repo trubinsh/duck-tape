@@ -78,7 +78,10 @@ export default function StructureFormatter() {
 
   return (
     <div className={"dt-flex-full-height"}>
-      <TitleContent title={`${format} Formatter`}>
+      <TitleContent
+        title={`${format} Formatter`}
+        description={`Format your ${format} data with proper indentation and syntax highlighting. Make your code readable and well-structured.`}
+      >
         <Button variant={"filled"} me={"sm"}
                 onClick={minifyString}>Minify</Button>
         <Button variant={"filled"} me={"sm"}

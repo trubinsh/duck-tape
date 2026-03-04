@@ -91,7 +91,10 @@ function SimpleEncoder({format}: { format: Format }) {
 
   return (
     <div className={"dt-flex-full-height"}>
-      <TitleContent title={`${format} Encoder/Decoder`}>
+      <TitleContent
+        title={`${format} Encoder/Decoder`}
+        description={`Encode or decode ${format} data with ease. This tool helps you convert text to ${format} and vice versa.`}
+      >
       </TitleContent>
       <Grid className={"e-grid"} style={{ flex: 1 }}>
         <Grid.Col span={6} className={"e-grid-col"}>
@@ -166,7 +169,10 @@ function JWTEncoder() {
 
   return (
     <div className={"dt-flex-full-height"}>
-      <TitleContent title={"JWT Encoder/Decoder"}/>
+      <TitleContent
+        title={"JWT Encoder/Decoder"}
+        description={"Decode and inspect JSON Web Tokens (JWT). See the header, payload, and signature components in a readable format."}
+      />
       <Grid style={{ flex: 1 }}>
         <Grid.Col span={6} className={"dt-flex-full-height"}>
           <Card withBorder>

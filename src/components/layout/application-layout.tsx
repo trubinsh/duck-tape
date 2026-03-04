@@ -11,9 +11,10 @@ import {
   ScrollArea,
   Text,
   Title,
+  Tooltip,
   UnstyledButton,
 } from '@mantine/core';
-import {IconBrandGithub, IconSettings} from '@tabler/icons-react';
+import {IconBrandGithub, IconInfoCircle, IconSettings} from '@tabler/icons-react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {isToolGroup, tools, useTitle} from "@/lib/utils.ts";
 import * as React from "react";
@@ -30,7 +31,7 @@ export function ApplicationLayout({children}: {
   const location = useLocation();
   const navigate = useNavigate();
   const [isInitialized, setIsInitialized] = useState(false);
-  const {content: titleContent, title} = useTitle();
+  const {content: titleContent, title, description} = useTitle();
   const [opened, {open, close}] = useDisclosure(false);
 
   useEffect(() => {
@@ -148,10 +149,19 @@ export function ApplicationLayout({children}: {
             <>
               <Divider/>
               <Grid m={"md"}>
-                <Grid.Col span={3}>
-                  <Title order={4}>{title}</Title>
+                <Grid.Col span={6}>
+                  <Group gap="xs">
+                    <Title order={4}>{title}</Title>
+                    {description && (
+                      <Tooltip label={description} multiline w={300} withArrow transitionProps={{ transition: 'fade', duration: 200 }}>
+                        <ActionIcon variant="subtle" color="gray" size="sm">
+                          <IconInfoCircle size={18} />
+                        </ActionIcon>
+                      </Tooltip>
+                    )}
+                  </Group>
                 </Grid.Col>
-                <Grid.Col span={9}>
+                <Grid.Col span={6}>
                   <Group justify={"flex-end"}>
                     {titleContent}
                   </Group>
