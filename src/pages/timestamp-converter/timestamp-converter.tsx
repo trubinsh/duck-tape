@@ -84,7 +84,10 @@ function TimestampConverter() {
 
   return (
     <div className={"dt-flex-full-height"}>
-      <TitleContent title={"Timestamp Converter"}/>
+      <TitleContent
+        title={"Timestamp Converter"}
+        description={"Convert Unix timestamps to human-readable date and time formats. Supports seconds, milliseconds, and multiple time zones."}
+      />
       <Grid mt={"sm"} style={{ flex: 1 }}>
         <Grid.Col span={6}>
           <FromEpochConverter/>

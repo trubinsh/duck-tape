@@ -82,7 +82,10 @@ export function RegexPage() {
 
   return (
     <div className={"dt-flex-full-height"}>
-      <TitleContent title={"Regex Tester"}/>
+      <TitleContent
+        title={"Regex Tester"}
+        description={"Test your regular expressions against sample text. Real-time feedback with highlighted matches."}
+      />
       <Stack
         style={{flex: 1, position: 'relative', height: 'calc(100vh - 60px - var(--mantine-spacing-md) * 3)'}}
         gap="xs">

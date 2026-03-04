@@ -49,7 +49,10 @@ function PasswordGenerator() {
 
   return (
     <>
-      <TitleContent title={"Password Generator"}>
+      <TitleContent
+        title={"Password Generator"}
+        description={"Generate secure, random passwords with customizable length and character sets. Keep your accounts safe with strong passwords."}
+      >
         <Button variant={"filled"} me={"sm"}
                 onClick={onGeneratePassword}>Generate</Button>
         <Tooltip label={"Password length"}>

@@ -40,7 +40,7 @@ function generateUuid(count: number, version: string) {
     switch (version) {
       case 'v1': return v1();
       case 'v4': return v4();
-      case 'v5': return v5('https://dev-tools.app', v4());
+      case 'v5': return v5('https://duck-tape.app', v4());
       case 'v6': return v6();
       case 'v7': return v7();
       default: return ''

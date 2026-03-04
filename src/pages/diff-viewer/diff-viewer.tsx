@@ -43,7 +43,10 @@ export default function DiffViewer() {
 
   return (
     <div className={"dt-flex-full-height"}>
-      <TitleContent title={"Diff Viewer"}/>
+      <TitleContent
+        title={"Diff Viewer"}
+        description={"Compare two pieces of text or code and highlight the differences. Side-by-side or unified view supported."}
+      />
       <div ref={mergeViewRef} id="diff-viewer"
            className={"dv-container"}/>
     </div>
