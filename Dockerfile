@@ -12,6 +12,10 @@ RUN npm ci
 # Copy the rest of the application
 COPY . .
 
+# Build argument for Google AdSense
+ARG VITE_GOOGLE_ADSENSE_CLIENT_ID
+ENV VITE_GOOGLE_ADSENSE_CLIENT_ID=$VITE_GOOGLE_ADSENSE_CLIENT_ID
+
 # Build the application
 RUN npm run build
 
